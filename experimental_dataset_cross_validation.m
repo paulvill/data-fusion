@@ -1,9 +1,16 @@
 addpath_datafusion
 
-%%
-% color movies using semi supervised learning
-% harmonic extension - min f L f
-% ALL SETS OF SNAPSHOTS TOGETHER
+% this script aims at computing the K-fold cross-validation error for each
+% of the labels, for each of the datasets
+% we first import all the images, movies and snapshots and apply image
+% preprocessing steps on them
+% we then compute the scatter transformation of the images and the affinity
+% matrix
+% we finally compute the cross validation normalized absolute error for
+% each of the channels and each of the datasets, with a varying number of
+% unlabeled movie frames
+
+%% Importing movie frames
 
 % Movie/snapshot loading parameters.
 npixels = 512;
@@ -24,19 +31,10 @@ a_movies = 10;
 b_movies = 0.8;
 
 % Specify which movies that we should use.
-diffusion_movie_idx = [1 2 3 4 5 6 7]'; % 1 2 3
-
-% Which movie do we want to colorize?
-colorizing_movie_id = 7;
-
-% How many snapshots neighbors do we average over?
-colorizing_neighbors = 5;
+diffusion_movie_idx = [1 2 3 4 5 6 7]'; 
 
 % The relative angles of the movies determined by hand.
 movies_theta = [-95 -80 -80 -95 -120 -95 -55]';
-
-% Determine script name
-script_name = mfilename();
 
 % Load all the movies.
 movie_opt.data_dir = 'data/movies';
@@ -48,10 +46,6 @@ fprintf('Loading movies...');
 movies = load_movie_set(movie_opt);
 fprintf('OK\n');
 
-% Certain movies are bad/not representative, so we remove them for now.
-mask = find(ismember(movies.movie_idx, diffusion_movie_idx));
-movies = subset_movie_set(movies, mask);
-
 % Suppress 2nd and 3rd channels. These have no real information.
 movies.images(:,:,2:3,:) = 0;
 
@@ -62,13 +56,12 @@ movies_orig = movies;
 % To make sure all images are aligned prior to comparing them, we center them.
 fprintf('Centering movies...');
 % we center movies sequence-wise to avoid jittering in the reconstruction
-for i = 1:max(movies.movie_idx),
-    movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
+for i = 1:max(movies.movie_idx)
+movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
 end
 fprintf('OK\n');
 
-% Since the movies are not rotated into reference position, we need to do this
-% first.
+% Movies are rotated into reference position
 fprintf('Rotating movies...');
 movies_orig.images = rotate_images(movies_orig.images, ...
     movies_theta(diffusion_movie_idx(movies_orig.movie_idx)));
@@ -99,30 +92,19 @@ movies.images = increase_contrast_images(movies.images, a_movies, b_movies);
 fprintf('OK\n');
 
 % To make sure all images are aligned prior to comparing them, we center them.
-% fprintf('Centering movies...');
-% % we center movies sequence-wise
-% for i = 1:max(movies.movie_idx),
-% movies.images(:,:,movies.movie_idx == i) = mean_center_zstack(movies.images(:,:,movies.movie_idx == i),1,'TRUE',1);
-% end
-% fprintf('OK\n');
-
-% To make sure all images are aligned prior to comparing them, we center them.
 fprintf('Centering images...');
 center_im = @(im)(mean_center_image(im, 1, true, 1));
 movies.images = matfun(center_im, movies.images, 3);
 fprintf('OK\n');
 
-% Since the movies are not rotated into reference position, we need to do this
-% first.
+% Movies are rotated into reference position
 fprintf('Rotating movies...');
 movies.images = rotate_images(movies.images, ...
     movies_theta(diffusion_movie_idx(movies.movie_idx)));
 fprintf('OK\n');
 
 
-
-%% % Load the snapshots.
-% data set 1
+%% Load the first set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -138,8 +120,7 @@ b_snapshots = 1.0;
 
 % Load the snapshots.
 snapshot_opt.data_dir = 'data/data_set1/';
-snapshot_opt.image_name = 'ordered';%'emb';
-% snapshot_opt.angles_name = 'fixed_thetas.txt';
+snapshot_opt.image_name = 'ordered';
 snapshot_opt.npixels = npixels;
 
 fprintf('Loading snapshots...');
@@ -147,7 +128,6 @@ snapshots1 = load_movie_set(snapshot_opt);
 % Put in fake times.
 snapshots1.times = [1:numel(snapshots1.times)]';
 fprintf('OK\n');
-
 
 % Save original snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -192,9 +172,7 @@ fprintf('OK\n');
 
 
 
-%%
-
-% data set 2
+%% Load the second set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -220,7 +198,7 @@ snapshots2 = load_movie_set(snapshot_opt);
 snapshots2.times = [1:numel(snapshots2.times)]';
 fprintf('OK\n');
 
-snapshots2.images(:,:,[1,2,3],:) = snapshots2.images(:,:,[3,2,1],:)
+snapshots2.images(:,:,[1,2,3],:) = snapshots2.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -278,7 +256,7 @@ snapshots2_1 = load_movie_set(snapshot_opt);
 snapshots2_1.times = [1:numel(snapshots2_1.times)]';
 fprintf('OK\n');
 
-snapshots2_1.images(:,:,[1,2,3],:) = snapshots2_1.images(:,:,[3,2,1],:)
+snapshots2_1.images(:,:,[1,2,3],:) = snapshots2_1.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -293,7 +271,7 @@ fprintf('OK\n');
 
 
 
-%%  data set 3
+%%  Load the third set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -387,9 +365,8 @@ center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig3_1.images = matfun(center_im, snapshots_orig3_1.images, 4);
 fprintf('OK\n');
 
-%%
+%% Load the fourth set of snapshots
 
-% data set 4
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
 sigma = 10;
@@ -413,7 +390,6 @@ snapshots4 = load_movie_set(snapshot_opt);
 % Put in fake times.
 snapshots4.times = [1:numel(snapshots4.times)]';
 fprintf('OK\n');
-
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -481,10 +457,15 @@ center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig4_1.images = matfun(center_im, snapshots_orig4_1.images, 4);
 fprintf('OK\n');
 
-%%
+%% In this part of the code, we compute the scatter transformation and the 
+% affinity matrix that will then be used for semi-supervised learning
 
+% We first remove some frames of the movies that are outlying and restricting the
+% window of observation from shortly before gastrulation to shortly after 
+% gastrulation to avoid complicated morphological changes which are not
+% well captured in cross section and too static morphology before
+% gastrulation
 
-% removing some frames of the movies that are outlying
 mask = [];
 
 indtemp1 = find(movies.movie_idx == 1);
@@ -526,8 +507,6 @@ movies_orig_sub = subset_movie_set(movies_orig, mask);
 
 % Put the movies and snapshots together into one movie set to simplify later
 % calculations.
-% all = movies_sub;
-
 all = cat_movie_sets(movies_sub, snapshots1);
 all = cat_movie_sets(all, snapshots2);
 all = cat_movie_sets(all, snapshots3);
@@ -565,98 +544,38 @@ for i = 1:length(unique(all.movie_idx)),
 end
 fprintf('OK\n');
 
-% Calculate the pairwise distances in the new space generated by the learned
-% kernel.
+% Calculate the pairwise distances
 fprintf('Calculating pairwise differences ...');
-V = calc_pairwise_distances(S_all);%all2.images);%
+V = calc_pairwise_distances(S_all);
 fprintf('OK\n');
 
-min_distance = min(V+diag(Inf(size(V, 1), 1)));
-median_min_distance = median(min_distance);
+%% Here we set up the parameters of cross-validation, depending on the 
+% number of unlabeled data points and the number of repetition, this part
+% can take some time
 
-mask = min_distance<3*median_min_distance;
-V = V(mask,mask);
-
-clear embed_coords;
-fprintf('Calculating diffusion maps for sanity check ...');
-[~, embed_coords] = DiffusionMapsFromDistanceGlobal(V, 1, 50);
-embed_coords = embed_coords(:,2:4);
-fprintf('OK\n');
-
-% figure,
-% subplot(2,2,1)
-% scatter(all.times(mask),embed_coords(:,1),50,all.movie_idx(mask),'filled');
-% subplot(2,2,2)
-% scatter(embed_coords(:,1),embed_coords(:,2),50,all.movie_idx(mask),'filled');
-% subplot(2,2,3)
-% scatter(embed_coords(:,1),embed_coords(:,3),50,all.movie_idx(mask),'filled');
-% subplot(2,2,4)
-% scatter(embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
-
-figure,
-subplot(2,2,1)
-scatter3(embed_coords(:,1),embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
-grid off
-xlabel('Diff. Coord. 1')
-ylabel('Diff. Coord. 2')
-zlabel('Diff. Coord. 3')
-subplot(2,2,2)
-scatter(embed_coords(:,1),embed_coords(:,2),50,all.movie_idx(mask),'filled');
-grid off
-xlabel('Diff. Coord. 1')
-ylabel('Diff. Coord. 2')
-
-subplot(2,2,3)
-scatter(embed_coords(:,1),embed_coords(:,3),50,all.movie_idx(mask),'filled');
-grid off
-xlabel('Diff. Coord. 1')
-ylabel('Diff. Coord. 3')
-
-subplot(2,2,4)
-scatter(embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
-grid off
-xlabel('Diff. Coord. 2')
-ylabel('Diff. Coord. 3')
-
-
-
-
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-%%
-
-fprintf('Calculating pairwise differences ...');
-V = calc_pairwise_distances(S_all);%all2.images);%
-fprintf('OK\n');
-
-
-% number of unlabeled
+% number of unlabeled data points
 n_unlbds = [(0:10:50),(100:50:250),length(find(all.movie_idx<8))];
 M = length(n_unlbds);
 
+% number of repetitions
 nrep = 10;
 
-% the normalized absolute error is computed for each 2/3 channel of each 4
+% the normalized absolute error is computed for each 2 or 3 channels of each 4
 % datasets
 abs_error = zeros(M,nrep,3,4);
 
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 1
 
-% K-fold cross validation
 K = 6;
 
 % varying the number of unlabeled samples
-
-for u = M,%[1,M],
+for u = 1:M
     fprintf([num2str(n_unlbds(u)),' \n']);
     
-    % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples
-    for r = 1,%1:nrep,
-        
+    % repetitions over the process of recoloring with K bins randomly drawn
+    % and a fixed number of unlabeled samples
+    for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 8 )';
@@ -676,15 +595,15 @@ for u = M,%[1,M],
         ind_l_sub = zeros(nb_labels/K,K);
         mask_label = ind_l_tot;
         
-        for k = 1:K,
+        for k = 1:K
             ind_temp = randperm(nb_labels - (k-1)*nb_labels/K,nb_labels/K);
             ind_l_sub(:,k) = mask_label(ind_temp);
             mask_label(ind_temp) = [];
         end
         
-        % color the selected snapshots as if they were unlabeled
         t = cputime;
         
+        % color the selected snapshots as if they were unlabeled
         % dpERK
         snapshots_recolored1 = zeros(size(snapshots_orig1.images(:,:,2,:)));
         im_orig1 = double(snapshots_orig1.images(:,:,2,:));
@@ -693,9 +612,8 @@ for u = M,%[1,M],
         snapshots_recolored2 = zeros(size(snapshots_orig1.images(:,:,3,:)));
         im_orig2 = double(snapshots_orig1.images(:,:,3,:));
         
-        for k = 1:K,
-            
-            
+        % for each of the bins
+        for k = 1:K
             indl_k = indl;
             
             indu_k = [indu,indl(ind_l_sub(:,k))];
@@ -704,6 +622,8 @@ for u = M,%[1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
+            % the semi-supervised learning problem is solved on each
+            % combination of labeled and unlabeled data points
             [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
@@ -712,8 +632,8 @@ for u = M,%[1,M],
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels, %
-                for j = 1:npixels, %
+            for i = 1:npixels
+                for j = 1:npixels
                     
                     Y1 = [double(squeeze(snapshots_orig1.images(i,j,2,indl_k-min(indl_k)+1)))];
                     fu1 = inv_u*Y1;
@@ -733,6 +653,7 @@ for u = M,%[1,M],
             
         end
         
+        % the recolored snapshots are compared to the original snapshots
         max_int = max(im_orig1(:));
         min_int = min(im_orig1(:));
         
@@ -747,19 +668,15 @@ for u = M,%[1,M],
 end
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 2
-
-% K-fold cross validation
 K = 3;
 
 % varying the number of unlabeled samples
-
-for u = [1,M],
+for u = 1:M
     fprintf([num2str(n_unlbds(u)),' \n']);
     
-    % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples
-    for r = 1:nrep,
-        
+    % repetitions over the process of recoloring with K bins randomly drawn
+    % and a fixed number of unlabeled samples
+    for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 9 )';
@@ -786,9 +703,8 @@ for u = [1,M],
         end
         ind_l_sub{K} = mask_label;
         
-        % color the selected snapshots as if they were unlabeled
         t = cputime;
-        
+        % color the selected snapshots as if they were unlabeled
         % dpERK
         snapshots_recolored1 = zeros(size(snapshots_orig2_1.images(:,:,3,:)));
         im_orig1 = double(snapshots_orig2_1.images(:,:,3,:));
@@ -801,9 +717,7 @@ for u = [1,M],
         snapshots_recolored3 = zeros(size(snapshots_orig2_1.images(:,:,1,:)));
         im_orig3 = double(snapshots_orig2_1.images(:,:,1,:));
         
-        for k = 1:K,
-            
-            
+        for k = 1:K
             indl_k = indl;
             
             indu_k = [indu,indl(ind_l_sub{k})];
@@ -812,6 +726,8 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
+            % the semi-supervised learning problem is solved on each
+            % combination of labeled and unlabeled data points
             [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
@@ -820,8 +736,8 @@ for u = [1,M],
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels, %
-                for j = 1:npixels, %
+            for i = 1:npixels
+                for j = 1:npixels
                     
                     Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
                     fu1 = inv_u*Y1;
@@ -846,6 +762,7 @@ for u = [1,M],
             
         end
         
+        % the recolored snapshots are compared to the original snapshots
         max_int = max(im_orig1(:));
         min_int = min(im_orig1(:));
         
@@ -867,18 +784,15 @@ end
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 3
 
-% K-fold cross validation
 K = 3;
 
 % varying the number of unlabeled samples
-
-for u = [1,M],
+for u = [1,M]
     fprintf([num2str(n_unlbds(u)),' \n']);
     
-    % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples
-    for r = 1:nrep,
-        
+    % repetitions over the process of recoloring with K bins randomly drawn
+    % and a fixed number of unlabeled samples
+    for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 10 )';
@@ -895,7 +809,7 @@ for u = [1,M],
         nb_labels = length(snapshots_orig3.movie_idx);
         ind_l_tot = 1:nb_labels;
         
-        ind_l_sub = {};%zeros(nb_labels/K,K);
+        ind_l_sub = {};
         mask_label = ind_l_tot;
         
         for k = 1:K-1,
@@ -903,11 +817,11 @@ for u = [1,M],
             ind_l_sub{k} = mask_label(ind_temp);
             mask_label(ind_temp) = [];
         end
-        ind_l_sub{K} = mask_label;
+        ind_l_sub{K} = mask_label
         
-        % color the selected snapshots as if they were unlabeled
         t = cputime;
         
+        % color the selected snapshots as if they were unlabeled
         % dpERK
         snapshots_recolored1 = zeros(size(snapshots_orig3_1.images(:,:,3,:)));
         im_orig1 = double(snapshots_orig3_1.images(:,:,3,:));
@@ -920,9 +834,8 @@ for u = [1,M],
         snapshots_recolored3 = zeros(size(snapshots_orig3_1.images(:,:,1,:)));
         im_orig3 = double(snapshots_orig3_1.images(:,:,1,:));
         
-        for k = 1:K,
-            
-            
+        % for each of the bins
+        for k = 1:K
             indl_k = indl;
             
             indu_k = [indu,indl(ind_l_sub{k})];
@@ -931,6 +844,8 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
+            % the semi-supervised learning problem is solved on each
+            % combination of labeled and unlabeled data points
             [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
@@ -939,8 +854,8 @@ for u = [1,M],
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels, %
-                for j = 1:npixels, %
+            for i = 1:npixels
+                for j = 1:npixels
                     
                     Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
                     fu1 = inv_u*Y1;
@@ -965,6 +880,7 @@ for u = [1,M],
             
         end
         
+        % the recolored snapshots are compared to the original snapshots
         max_int = max(im_orig1(:));
         min_int = min(im_orig1(:));
         
@@ -984,18 +900,15 @@ end
 
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 4
-% K-fold cross validation
 K = 2;
 
 % varying the number of unlabeled samples
-
-for u = [1,M],
+for u = 1:M
     fprintf([num2str(n_unlbds(u)),' \n']);
     
-    % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples
-    for r = 1:nrep,
-        
+    % repetitions over the process of recoloring with K bins randomly drawn
+    % and a fixed number of unlabeled samples
+    for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 11 )';
@@ -1012,19 +925,19 @@ for u = [1,M],
         nb_labels = length(snapshots_orig4.movie_idx);
         ind_l_tot = 1:nb_labels;
         
-        ind_l_sub = {};%zeros(nb_labels/K,K);
+        ind_l_sub = {};
         mask_label = ind_l_tot;
         
-        for k = 1:K-1,
+        for k = 1:K-1
             ind_temp = randperm(nb_labels - (k-1)*round(nb_labels/K),round(nb_labels/K));
             ind_l_sub{k} = mask_label(ind_temp);
             mask_label(ind_temp) = [];
         end
         ind_l_sub{K} = mask_label;
         
-        % color the selected snapshots as if they were unlabeled
         t = cputime;
         
+        % color the selected snapshots as if they were unlabeled
         % Twist
         snapshots_recolored1 = zeros(size(snapshots_orig4_1.images(:,:,3,:)));
         im_orig1 = double(snapshots_orig4_1.images(:,:,3,:));
@@ -1036,10 +949,9 @@ for u = [1,M],
         % rhomboid
         snapshots_recolored3 = zeros(size(snapshots_orig4_1.images(:,:,2,:)));
         im_orig3 = double(snapshots_orig4_1.images(:,:,2,:));
-        
-        for k = 1:K,
-            
-            
+
+        % for each of the bins
+        for k = 1:K
             indl_k = indl;
             
             indu_k = [indu,indl(ind_l_sub{k})];
@@ -1048,6 +960,8 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
+            % the semi-supervised learning problem is solved on each
+            % combination of labeled and unlabeled data points
             [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
@@ -1056,8 +970,8 @@ for u = [1,M],
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels, %
-                for j = 1:npixels, %
+            for i = 1:npixels
+                for j = 1:npixels
                     
                     Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
                     fu1 = inv_u*Y1;
@@ -1081,7 +995,8 @@ for u = [1,M],
             t = cputime;
             
         end
-        
+
+        % the recolored snapshots are compared to the original snapshots
         max_int = max(im_orig1(:));
         min_int = min(im_orig1(:));
         

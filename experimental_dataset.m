@@ -1,9 +1,16 @@
 addpath_datafusion
 
-%%
-% color movies using semi supervised learning 
-% harmonic extension - min f L f
-% ALL SETS OF SNAPSHOTS TOGETHER
+% this script colors movies from static snapshots using semi supervised learning 
+% the first step is to import and apply image preprocessing on movie frames
+% and snapshots
+% the scattering transformation is then computed on the entire set of
+% images
+% an affinity matrix is obtained from the scattering transformation and
+% used to compute the semi-supervised algorithm for each channel
+% finally a colored movie is stored as a sequence of images, either
+% combined or channel by channel
+
+%% Importing movie frames
 
 % Movie/snapshot loading parameters.
 npixels = 512;
@@ -24,19 +31,10 @@ a_movies = 10;
 b_movies = 0.8;
 
 % Specify which movies that we should use.
-diffusion_movie_idx = [1 2 3 4 5 6 7]'; % 1 2 3
-
-% Which movie do we want to colorize?
-colorizing_movie_id = 7;
-
-% How many snapshots neighbors do we average over?
-colorizing_neighbors = 5;
+diffusion_movie_idx = [1 2 3 4 5 6 7]'; 
 
 % The relative angles of the movies determined by hand.
 movies_theta = [-95 -80 -80 -95 -120 -95 -55]';
-
-% Determine script name
-script_name = mfilename();
 
 % Load all the movies.
 movie_opt.data_dir = 'data/movies';
@@ -48,10 +46,6 @@ fprintf('Loading movies...');
 movies = load_movie_set(movie_opt);
 fprintf('OK\n');
 
-% Certain movies are bad/not representative, so we remove them for now.
-mask = find(ismember(movies.movie_idx, diffusion_movie_idx));
-movies = subset_movie_set(movies, mask);
-
 % Suppress 2nd and 3rd channels. These have no real information.
 movies.images(:,:,2:3,:) = 0;
 
@@ -62,13 +56,12 @@ movies_orig = movies;
 % To make sure all images are aligned prior to comparing them, we center them.
 fprintf('Centering movies...');
 % we center movies sequence-wise to avoid jittering in the reconstruction
-for i = 1:max(movies.movie_idx),
+for i = 1:max(movies.movie_idx)
 movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
 end
 fprintf('OK\n');
 
-% Since the movies are not rotated into reference position, we need to do this
-% first.
+% Movies are rotated into reference position
 fprintf('Rotating movies...');
 movies_orig.images = rotate_images(movies_orig.images, ...
     movies_theta(diffusion_movie_idx(movies_orig.movie_idx)));
@@ -99,30 +92,19 @@ movies.images = increase_contrast_images(movies.images, a_movies, b_movies);
 fprintf('OK\n');
 
 % To make sure all images are aligned prior to comparing them, we center them.
-% fprintf('Centering movies...');
-% % we center movies sequence-wise
-% for i = 1:max(movies.movie_idx),
-% movies.images(:,:,movies.movie_idx == i) = mean_center_zstack(movies.images(:,:,movies.movie_idx == i),1,'TRUE',1);
-% end
-% fprintf('OK\n');
-
-% To make sure all images are aligned prior to comparing them, we center them.
 fprintf('Centering images...');
 center_im = @(im)(mean_center_image(im, 1, true, 1));
 movies.images = matfun(center_im, movies.images, 3);
 fprintf('OK\n');
 
-% Since the movies are not rotated into reference position, we need to do this
-% first.
+% Movies are rotated into reference position
 fprintf('Rotating movies...');
 movies.images = rotate_images(movies.images, ...
     movies_theta(diffusion_movie_idx(movies.movie_idx)));
 fprintf('OK\n');
 
 
-
-%% % Load the snapshots.
-% data set 1 
+%% Load the first set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -138,8 +120,7 @@ b_snapshots = 1.0;
 
 % Load the snapshots.
 snapshot_opt.data_dir = 'data/data_set1/';
-snapshot_opt.image_name = 'ordered';%'emb';
-% snapshot_opt.angles_name = 'fixed_thetas.txt';
+snapshot_opt.image_name = 'ordered';
 snapshot_opt.npixels = npixels;
 
 fprintf('Loading snapshots...');
@@ -147,7 +128,6 @@ snapshots1 = load_movie_set(snapshot_opt);
 % Put in fake times.
 snapshots1.times = [1:numel(snapshots1.times)]';
 fprintf('OK\n');
-
 
 % Save original snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -192,9 +172,7 @@ fprintf('OK\n');
 
 
 
-%%
-
-% data set 2 
+%% Load the second set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -220,7 +198,7 @@ snapshots2 = load_movie_set(snapshot_opt);
 snapshots2.times = [1:numel(snapshots2.times)]';
 fprintf('OK\n');
 
-snapshots2.images(:,:,[1,2,3],:) = snapshots2.images(:,:,[3,2,1],:)
+snapshots2.images(:,:,[1,2,3],:) = snapshots2.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -278,7 +256,7 @@ snapshots2_1 = load_movie_set(snapshot_opt);
 snapshots2_1.times = [1:numel(snapshots2_1.times)]';
 fprintf('OK\n');
 
-snapshots2_1.images(:,:,[1,2,3],:) = snapshots2_1.images(:,:,[3,2,1],:)
+snapshots2_1.images(:,:,[1,2,3],:) = snapshots2_1.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -293,7 +271,7 @@ fprintf('OK\n');
 
 
 
-%%  data set 3 
+%%  Load the third set of snapshots
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -387,9 +365,8 @@ center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig3_1.images = matfun(center_im, snapshots_orig3_1.images, 4);
 fprintf('OK\n');
 
-%%
+%% Load the fourth set of snapshots
 
-% data set 4
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
 sigma = 10;
@@ -413,8 +390,6 @@ snapshots4 = load_movie_set(snapshot_opt);
 % Put in fake times.
 snapshots4.times = [1:numel(snapshots4.times)]';
 fprintf('OK\n');
-
-% snapshots4.images(:,:,[1,2,3],:) = snapshots4.images(:,:,[3,2,1],:)
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -482,10 +457,15 @@ center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig4_1.images = matfun(center_im, snapshots_orig4_1.images, 4);
 fprintf('OK\n');
 
-%%
+%% In this part of the code, we compute the scatter transformation and the 
+% affinity matrix that will then be used for semi-supervised learning
 
+% We first remove some frames of the movies that are outlying and restricting the
+% window of observation from shortly before gastrulation to shortly after 
+% gastrulation to avoid complicated morphological changes which are not
+% well captured in cross section and too static morphology before
+% gastrulation
 
-% removing some frames of the movies that are outlying
 mask = [];
 
 indtemp1 = find(movies.movie_idx == 1);
@@ -527,8 +507,6 @@ movies_orig_sub = subset_movie_set(movies_orig, mask);
 
 % Put the movies and snapshots together into one movie set to simplify later
 % calculations.
-% all = movies_sub;
-
 all = cat_movie_sets(movies_sub, snapshots1);
 all = cat_movie_sets(all, snapshots2);
 all = cat_movie_sets(all, snapshots3);
@@ -566,8 +544,7 @@ for i = 1:length(unique(all.movie_idx)),
 end
 fprintf('OK\n');
 
-% Calculate the pairwise distances in the new space generated by the learned
-% kernel.
+% Calculate the pairwise distances
 fprintf('Calculating pairwise differences ...');
 V = calc_pairwise_distances(S_all);
 fprintf('OK\n');
@@ -575,7 +552,7 @@ fprintf('OK\n');
 min_distance = min(V+diag(Inf(size(V, 1), 1)));
 median_min_distance = median(min_distance);
 
-mask = min_distance<2*median_min_distance;
+mask = min_distance<3*median_min_distance;
 V = V(mask,mask);
 
 clear embed_coords;
@@ -584,8 +561,8 @@ fprintf('Calculating diffusion maps for sanity check ...');
 embed_coords = embed_coords(:,2:4);
 fprintf('OK\n');
 
-
-
+% figure showing low dimensional embedding of the cloud of points in the
+% diffusion maps space
 figure, 
 subplot(2,2,1)
 scatter3(embed_coords(:,1),embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
@@ -598,13 +575,11 @@ scatter(embed_coords(:,1),embed_coords(:,2),50,all.movie_idx(mask),'filled');
 grid off
 xlabel('Diff. Coord. 1')
 ylabel('Diff. Coord. 2')
-
 subplot(2,2,3)
 scatter(embed_coords(:,1),embed_coords(:,3),50,all.movie_idx(mask),'filled');
 grid off
 xlabel('Diff. Coord. 1')
 ylabel('Diff. Coord. 3')
-
 subplot(2,2,4)
 scatter(embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
 grid off
@@ -612,45 +587,39 @@ xlabel('Diff. Coord. 2')
 ylabel('Diff. Coord. 3')
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%%
+%% In this section, we visualize the pairwise differences and the affinity matrix
 
+% Calculate the pairwise distances 
+fprintf('Calculating pairwise differences ...');
+V_vis = calc_pairwise_distances(S_all);
+fprintf('OK\n');
+
+% figure showing the pairwise differences between images
 figure, 
-imagesc(V);
+imagesc(V_vis);
 hold on,
 for i = 1:max(all.movie_idx),
     indtemp = find(all.movie_idx == i);    
     rectangle('Position',[indtemp(1) indtemp(1) indtemp(end)-indtemp(1) indtemp(end)-indtemp(1)],'EdgeColor','w','LineWidth',4)
 end
 
-
-W = AffinityFromDistance(V,10);
+% figure showing the affinity matrix
+W_vis = AffinityFromDistance(V_vis,10);
 figure, 
-imagesc(W);
+imagesc(W_vis);
 hold on,
 for i = 1:max(all.movie_idx),
     indtemp = find(all.movie_idx == i);    
     rectangle('Position',[indtemp(1) indtemp(1) indtemp(end)-indtemp(1) indtemp(end)-indtemp(1)],'EdgeColor','w','LineWidth',4)
 end
 
-%%
-
-% COLORING dpERK
-% dpERK = [213, 36, 2];
-% Twi = [92, 188, 146];
-% Ind = [103, 139, 191];
-% Dorsal = [229, 195, 207];
-% Rho = [255, 223, 75];
+%% Predicting dpERK on the unlabeled movie frames
 
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
 
-% indl = find(all.movie_idx(mask) == 9)';
-% indu = find(all.movie_idx(mask) ~= 9)';
 indl = find(all.movie_idx(mask) == 8 | all.movie_idx(mask) == 9 | all.movie_idx(mask) == 10)';
 indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 10)';
 l1 = length(indl);
@@ -670,8 +639,8 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels, %
-    for j = 1:npixels, %
+for i = 1:npixels,
+    for j = 1:npixels, 
 
         Y1 = [double(squeeze(snapshots_orig1.images(i,j,2,snapshots1_mask))); double(squeeze(snapshots_orig2_1.images(i,j,3,snapshots2_mask))); double(squeeze(snapshots_orig3_1.images(i,j,3,snapshots3_mask)))];
         fu1 = inv_u*Y1;
@@ -701,14 +670,7 @@ end
 movies_colored_dpERK.images = movies_colored_dpERK.images/max(movies_colored_dpERK.images(:));
 
 
-%%
-
-% COLORING Twist
-% dpERK = [213, 36, 2];
-% Twi = [92, 188, 146];
-% Ind = [103, 139, 191];
-% Dorsal = [229, 195, 207];
-% Rho = [255, 223, 75];
+%% Predicting Twi on the unlabeled movie frames
 
 t = cputime;
 ntot = sum(mask);
@@ -768,14 +730,7 @@ end
 movies_colored_twi.images = movies_colored_twi.images/max(movies_colored_twi.images(:));
 
 
-%%
-
-% COLORING Ind
-% dpERK = [213, 36, 2];
-% Twi = [92, 188, 146];
-% Ind = [103, 139, 191];
-% Dorsal = [229, 195, 207];
-% Rho = [255, 223, 75];
+%% Predicting ind on the unlabeled movie frames
 
 t = cputime;
 ntot = sum(mask);
@@ -835,14 +790,7 @@ end
 movies_colored_ind.images = movies_colored_ind.images/max(movies_colored_ind.images(:));
 
 
-%%
-
-% COLORING Dorsal
-% dpERK = [213, 36, 2];
-% Twi = [92, 188, 146];
-% Ind = [103, 139, 191];
-% Dorsal = [229, 195, 207];
-% Rho = [255, 223, 75];
+%% Predicting Dorsal (Dl) on the unlabeled movie frames
 
 t = cputime;
 ntot = sum(mask);
@@ -901,14 +849,7 @@ end
 
 movies_colored_dl.images = movies_colored_dl.images/max(movies_colored_dl.images(:));
 
-%%
-
-% COLORING Rhomboid
-% dpERK = [213, 36, 2];
-% Twi = [92, 188, 146];
-% Ind = [103, 139, 191];
-% Dorsal = [229, 195, 207];
-% Rho = [255, 223, 75];
+%% Predicting rho on the unlabeled movie frames
 
 t = cputime;
 ntot = sum(mask);
@@ -968,8 +909,9 @@ end
 
 movies_colored_rho.images = movies_colored_rho.images/max(movies_colored_rho.images(:));
 
-%%
+%% Coloring the movie frames according to the color code
 
+% color code
 % dpERK = [213, 36, 2];
 % Twi = [92, 188, 146];
 % Ind = [103, 139, 191];
@@ -1008,8 +950,6 @@ rho(:,:,2,:) = col(5,2)*movies_colored_rho.images(:,:,2,:);
 rho(:,:,3,:) = col(5,3)*movies_colored_rho.images(:,:,2,:);
 
 
-
-%%
 fused = [];
 
 fused = nuclei(:,:,:,:) + twi(:,:,:,:) + ind(:,:,:,:) + dl(:,:,:,:) + rho(:,:,:,:) + dpERK(:,:,:,:);
@@ -1017,8 +957,9 @@ fused(:,:,1,:) = fused(:,:,1,:)/max(max(max(fused(:,:,1,:))));
 fused(:,:,2,:) = fused(:,:,2,:)/max(max(max(fused(:,:,2,:))));
 fused(:,:,3,:) = fused(:,:,3,:)/max(max(max(fused(:,:,3,:))));
 
-%% save the fused movie with all the channels together
+%% save the fused movie
 
+%  with all the channels together
 mkdir('coloredmovie');
 
 indtemp = find(all.movie_idx == 5);
@@ -1124,28 +1065,4 @@ for k = 1:length(indtemp),
     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/rhomboid',num2str(k),'.png']);
 end
 
-%%
-
-indtemp = find(all.movie_idx == 5);
-
-writerObj = VideoWriter(['coloredmovie/all_colors_reconstructed_movie.avi']);
-
-fig = figure('position',[100 100 512 512]);
-open(writerObj);
-set(gca,'nextplot','replacechildren');
-set(gcf,'Renderer','zbuffer');
-
-ax = gca;
-ax.NextPlot = 'replaceChildren';
-axis off;
-pause(1)
-for i = 1:length(indtemp),
-   imagesc(fused(:,:,:,indtemp(i)));
-    pause(0.1);
-       frame = getframe(fig);
-    writeVideo(writerObj,frame);
-    pause(0.2)
-
-end
-close(writerObj);
 
