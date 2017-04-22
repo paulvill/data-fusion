@@ -49,7 +49,7 @@ cmap = cmap(end:-1:1,:);
 
 figure,
 scatter(M(1,indl2),M(2,indl2),50,cmap(indl2_t,:),'filled');
-for i = 1:length(indl2_t)-1,
+for i = 1:length(indl2_t)-1
     hold on,
     plot([M(1,indl2(i)),M(1,indl2(i+1))],[M(2,indl2(i)),M(2,indl2(i+1))],'-','Color',cmap(indl2_t(i+1),:),'LineWidth',2);
 end
@@ -61,13 +61,13 @@ set(gca,'fontsize', 24);
 col2 = [255,98,58]/255;
 close
 
-h = figure,
+h = figure;
 scatter3(M(1,indl2),M(2,indl2),zeros(l2,1),50,cmap(indl2_t,:),'filled');
-for i = 1:length(indl2_t)-1,
+for i = 1:length(indl2_t)-1
     hold on,
     plot([M(1,indl2(i)),M(1,indl2(i+1))],[M(2,indl2(i)),M(2,indl2(i+1))],'-','Color',cmap(indl2_t(i+1),:),'LineWidth',2);
 end
-for j = 1:length(indl1),
+for j = 1:length(indl1)
     i = indl1_temp(j);
     ytemp = 0:0.5:(M(3,indl1(i)));
     xtemp = [M(1,indl1(i)).*ones(length(ytemp),1),M(2,indl1(i)).*ones(length(ytemp),1)];
@@ -90,17 +90,16 @@ W = AffinityFromDistance(dist,10);
 D = diag(sum(W, 2));
 
 % solving the semi-supervised problem
-[T, Tu, Tl] = transformation(indl1,indl2);
-[inv_u] = ssl_estimate(W, D, T, l1);
+[inv_u] = ssl_estimate(W, D, indl1,indl2);
 fu = inv_u*M(3,indl1)';
 
 
 col3 = [70,105,220]/255;
 
 % visualizing the predicted and original labels in the (x1, x2, t) space
-h = figure,
+h = figure;
 scatter3(M(1,indl2),M(2,indl2),zeros(l2,1),50,'w','filled');
-for j = 1:length(indl1),
+for j = 1:length(indl1)
     i = indl1_temp(j);
     ytemp = 0:0.5:(M(3,indl1(i)));
     xtemp = [M(1,indl1(i)).*ones(length(ytemp),1),M(2,indl1(i)).*ones(length(ytemp),1)];
@@ -109,7 +108,7 @@ for j = 1:length(indl1),
 end
 hold on,
 scatter3(M(1,indl2),M(2,indl2),fu,50,cmap(indl2_t,:),'filled');
-for i = 1:length(indl2_t)-1,
+for i = 1:length(indl2_t)-1
     hold on,
     plot3([M(1,indl2(i)),M(1,indl2(i+1))],[M(2,indl2(i)),M(2,indl2(i+1))],[fu(i),fu(i+1)],'-','Color',cmap(indl2_t(i+1),:),'LineWidth',4);
 end
@@ -126,15 +125,15 @@ mkdir(d);
 saveas(h,[d,'/x1_x2_predicted_labels'],'png');
 
 % visualizing the original and predicted labels as a function of time
-h = figure,
+h = figure;
 hold on,
 scatter(t1,fu,50,cmap(indl2_t,:),'filled');
-for i = 1:length(indl2_t)-1,
+for i = 1:length(indl2_t)-1
     hold on,
     plot([t1(i),t1(i+1)],[fu(i),fu(i+1)],'-','Color',cmap(indl2_t(i+1),:),'LineWidth',4);
 end
 hold on,
-for j = 1:length(indl1),
+for j = 1:length(indl1)
     i = indl1_temp(j);
     
     scatter(t2(i),M(3,indl1(i)),50,col2,'filled');

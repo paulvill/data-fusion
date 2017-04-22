@@ -58,10 +58,10 @@ nrep = 100;
 % vector where the absolute error is stored
 abs_error = zeros(length(n_unlbds),nrep);
 
-for u = 1:length(n_unlbds), 
+for u = 1:length(n_unlbds) 
     fprintf([num2str(n_unlbds(u)),' \n']);
     
-    for r = 1:nrep,
+    for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = indl2;
@@ -84,7 +84,7 @@ for u = 1:length(n_unlbds),
         ind_l_sub = zeros(nb_labels/K,K);
         mask = 1:nb_labels;
         
-        for k = 1:K,
+        for k = 1:K
             ind_temp = randperm(nb_labels - (k-1)*nb_labels/K,nb_labels/K);
             ind_l_sub(:,k) = mask(ind_temp);
             mask(ind_temp) = [];
@@ -92,7 +92,7 @@ for u = 1:length(n_unlbds),
         
         % predict label value on the on the selected labeled points
         predicted_labels = zeros(nb_labels,1);
-        for k = 1:K,
+        for k = 1:K
             indu = (1:nb_unlbld);
             indl = (1:nb_labels);
             
@@ -110,8 +110,7 @@ for u = 1:length(n_unlbds),
             l2 = length(indu);
             
             % the semi-supervised learning problem is solved accordingly
-            [T, Tu, Tl] = transformation(indl,indu);
-            [inv_u] = ssl_estimate( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, indl,indu);
             
             % we obtain the label prediction
             fu = inv_u*M(3,indl)';
@@ -130,7 +129,7 @@ end
 m = mean(abs_error,2);
 s = std(abs_error,0,2);
 
-h = figure, 
+h = figure; 
 errorbar(n_unlbds,m,s,'LineWidth',5,'Color',[0.5 0.5 0.5])
 hold on,
 plot(n_unlbds,m,'o','Color',[0.5 0.5 0.5],'MarkerSize',10,'MarkerFaceColor',[0.5 0.5 0.5])

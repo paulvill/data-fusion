@@ -657,9 +657,7 @@ indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 9 & all.movie_idx(
 l1 = length(indl);
 l2 = length(indu);
 
-[T, Tu, Tl] = transformation(indl,indu);
-
-[inv_u] = ssl_estimate( W, D, T, l1);
+[inv_u] = ssl_estimate( W, D, indl, indu);
 
 npixels = 512;
 movies_colored_dpERK = movies_orig_sub;
@@ -725,9 +723,7 @@ indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 11)';
 l1 = length(indl);
 l2 = length(indu);
 
-[T, Tu, Tl] = transformation(indl,indu);
-
-[inv_u] = ssl_estimate( W, D, T, l1);
+[inv_u] = ssl_estimate( W, D, indl, indu);
 
 npixels = 512;
 movies_colored_twi = movies_orig_sub;
@@ -795,9 +791,7 @@ indu = find(all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 11)';
 l1 = length(indl);
 l2 = length(indu);
 
-[T, Tu, Tl] = transformation(indl,indu);
-
-[inv_u] = ssl_estimate( W, D, T, l1);
+[inv_u] = ssl_estimate( W, D, indl, indu);
 
 npixels = 512;
 movies_colored_ind = movies_orig_sub;
@@ -865,9 +859,7 @@ indu = find(all.movie_idx(mask) ~= 9)';
 l1 = length(indl);
 l2 = length(indu);
 
-[T, Tu, Tl] = transformation(indl,indu);
-
-[inv_u] = ssl_estimate( W, D, T, l1);
+[inv_u] = ssl_estimate( W, D, indl, indu);
 
 npixels = 512;
 movies_colored_dl = movies_orig_sub;
@@ -934,9 +926,8 @@ indu = find(all.movie_idx(mask) < 10)';
 l1 = length(indl);
 l2 = length(indu);
 
-[T, Tu, Tl] = transformation(indl,indu);
 
-[inv_u] = ssl_estimate( W, D, T, l1);
+[inv_u] = ssl_estimate( W, D, indl, indu);
 
 npixels = 512;
 movies_colored_rho = movies_orig_sub;

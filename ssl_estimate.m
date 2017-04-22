@@ -1,9 +1,19 @@
-function [inv_u] = ssl_estimate4( W, D, T,l)
+function [inv_u] = ssl_estimate( W, D,indl, indu)
 %SSL_ESTIMATE Summary of this function goes here
 %   Detailed explanation goes here
 	
-	n = size(W, 1);
+	n = length(indl)+length(indu);
+    indtot = [indl,indu];
+    l = length(indl);
 	u = n-l;
+    T = zeros(length(indu)+length(indl));
+    for i = 1:n
+        for j = 1:n
+            if j == indtot(i)
+                T(i,j) = 1;
+            end
+        end
+    end
     
     D_j = T*D*(T');
     W_j = T*W*(T');

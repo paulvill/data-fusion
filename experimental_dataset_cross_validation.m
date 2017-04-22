@@ -1,7 +1,7 @@
 addpath_datafusion
 
 %%
-% color movies using semi supervised learning 
+% color movies using semi supervised learning
 % harmonic extension - min f L f
 % ALL SETS OF SNAPSHOTS TOGETHER
 
@@ -63,7 +63,7 @@ movies_orig = movies;
 fprintf('Centering movies...');
 % we center movies sequence-wise to avoid jittering in the reconstruction
 for i = 1:max(movies.movie_idx),
-movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
+    movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
 end
 fprintf('OK\n');
 
@@ -122,7 +122,7 @@ fprintf('OK\n');
 
 
 %% % Load the snapshots.
-% data set 1 
+% data set 1
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -194,7 +194,7 @@ fprintf('OK\n');
 
 %%
 
-% data set 2 
+% data set 2
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -293,7 +293,7 @@ fprintf('OK\n');
 
 
 
-%%  data set 3 
+%%  data set 3
 
 % Normalization parameters controlling the width of the averaging kernel and
 % the regularization of the normalization, respectively.
@@ -583,7 +583,7 @@ fprintf('Calculating diffusion maps for sanity check ...');
 embed_coords = embed_coords(:,2:4);
 fprintf('OK\n');
 
-% figure, 
+% figure,
 % subplot(2,2,1)
 % scatter(all.times(mask),embed_coords(:,1),50,all.movie_idx(mask),'filled');
 % subplot(2,2,2)
@@ -593,7 +593,7 @@ fprintf('OK\n');
 % subplot(2,2,4)
 % scatter(embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
 
-figure, 
+figure,
 subplot(2,2,1)
 scatter3(embed_coords(:,1),embed_coords(:,2),embed_coords(:,3),50,all.movie_idx(mask),'filled');
 grid off
@@ -654,19 +654,19 @@ for u = M,%[1,M],
     fprintf([num2str(n_unlbds(u)),' \n']);
     
     % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples    
+    % witness snapshots and a fixed number of unlabeled samples
     for r = 1,%1:nrep,
         
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 8 )';
         indl = find(all.movie_idx == 8 )';
-    
+        
         mask_unlbld = randperm(length(indu),nb_unlbld);
         indu_mask = sort(indu(mask_unlbld));
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
-
+        
         W = AffinityFromDistance(V,10);
         D = diag(sum(W, 2));
         
@@ -706,10 +706,7 @@ for u = M,%[1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            
-            [T, Tu, Tl] = transformation(indl_k,indu_k);
-            
-            [inv_u] = ssl_estimate( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
             
             npixels = 512;
             
@@ -740,12 +737,12 @@ for u = M,%[1,M],
         
         max_int = max(im_orig1(:));
         min_int = min(im_orig1(:));
-
+        
         abs_error(u,r,1,1) = (1/length(im_orig1(:)))*sum(abs(snapshots_recolored1(:) - im_orig1(:)))/(max_int - min_int);
         
         max_int = max(im_orig2(:));
         min_int = min(im_orig2(:));
-
+        
         abs_error(u,r,2,1) = (1/length(im_orig2(:)))*sum(abs(snapshots_recolored2(:) - im_orig2(:)))/(max_int - min_int);
         
     end
@@ -762,19 +759,19 @@ for u = [1,M],
     fprintf([num2str(n_unlbds(u)),' \n']);
     
     % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples    
+    % witness snapshots and a fixed number of unlabeled samples
     for r = 1:nrep,
         
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 9 )';
         indl = find(all.movie_idx == 9 )';
-    
+        
         mask_unlbld = randperm(length(indu),nb_unlbld);
         indu_mask = sort(indu(mask_unlbld));
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
-
+        
         W = AffinityFromDistance(V,10);
         D = diag(sum(W, 2));
         
@@ -819,10 +816,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            
-            [T, Tu, Tl] = transformation(indl_k,indu_k);
-            
-            [inv_u] = ssl_estimate( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
             
             npixels = 512;
             
@@ -863,12 +857,12 @@ for u = [1,M],
         
         max_int = max(im_orig2(:));
         min_int = min(im_orig2(:));
-       
+        
         abs_error(u,r,2,2) = (1/length(im_orig2(:)))*sum(abs(snapshots_recolored2(:) - im_orig2(:)))/(max_int - min_int);
-
+        
         max_int = max(im_orig3(:));
         min_int = min(im_orig3(:));
-       
+        
         abs_error(u,r,3,2) = (1/length(im_orig3(:)))*sum(abs(snapshots_recolored3(:) - im_orig3(:)))/(max_int - min_int);
     end
 end
@@ -886,19 +880,19 @@ for u = [1,M],
     fprintf([num2str(n_unlbds(u)),' \n']);
     
     % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples    
+    % witness snapshots and a fixed number of unlabeled samples
     for r = 1:nrep,
         
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 10 )';
         indl = find(all.movie_idx == 10 )';
-    
+        
         mask_unlbld = randperm(length(indu),nb_unlbld);
         indu_mask = sort(indu(mask_unlbld));
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
-
+        
         W = AffinityFromDistance(V,10);
         D = diag(sum(W, 2));
         
@@ -943,10 +937,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            
-            [T, Tu, Tl] = transformation(indl_k,indu_k);
-            
-            [inv_u] = ssl_estimate( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
             
             npixels = 512;
             
@@ -987,12 +978,12 @@ for u = [1,M],
         
         max_int = max(im_orig2(:));
         min_int = min(im_orig2(:));
-       
+        
         abs_error(u,r,2,3) = (1/length(im_orig2(:)))*sum(abs(snapshots_recolored2(:) - im_orig2(:)))/(max_int - min_int);
-
+        
         max_int = max(im_orig3(:));
         min_int = min(im_orig3(:));
-       
+        
         abs_error(u,r,3,3) = (1/length(im_orig3(:)))*sum(abs(snapshots_recolored3(:) - im_orig3(:)))/(max_int - min_int);
     end
 end
@@ -1008,19 +999,19 @@ for u = [1,M],
     fprintf([num2str(n_unlbds(u)),' \n']);
     
     % do some repetition of the snapshots recoloring with randomly drawn
-    % witness snapshots and a fixed number of unlabeled samples    
+    % witness snapshots and a fixed number of unlabeled samples
     for r = 1:nrep,
         
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = find(all.movie_idx ~= 11 )';
         indl = find(all.movie_idx == 11 )';
-    
+        
         mask_unlbld = randperm(length(indu),nb_unlbld);
         indu_mask = sort(indu(mask_unlbld));
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
-
+        
         W = AffinityFromDistance(V,10);
         D = diag(sum(W, 2));
         
@@ -1065,10 +1056,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            
-            [T, Tu, Tl] = transformation(indl_k,indu_k);
-            
-            [inv_u] = ssl_estimate( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
             
             npixels = 512;
             
@@ -1109,13 +1097,13 @@ for u = [1,M],
         
         max_int = max(im_orig2(:));
         min_int = min(im_orig2(:));
-       
+        
         abs_error(u,r,2,4) = (1/length(im_orig2(:)))*sum(abs(snapshots_recolored2(:) - im_orig2(:)))/(max_int - min_int);
-
+        
         max_int = max(im_orig3(:));
         min_int = min(im_orig3(:));
-       
-        abs_error(u,r,3,4) = (1/length(im_orig3(:)))*sum(abs(snapshots_recolored3(:) - im_orig3(:)))/(max_int - min_int);       
+        
+        abs_error(u,r,3,4) = (1/length(im_orig3(:)))*sum(abs(snapshots_recolored3(:) - im_orig3(:)))/(max_int - min_int);
     end
 end
 
