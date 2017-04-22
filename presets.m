@@ -1,5 +1,4 @@
-%% Presets
-
+%% Presets for better visualizations
 
 fmt = '-dtiffn';
 res = '-r300';
@@ -15,5 +14,3 @@ set(0,'DefaultFigurePaperPositionMode','auto');
 % format long;
 whitebg('white');
 close
-
-%%
