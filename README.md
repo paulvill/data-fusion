@@ -3,7 +3,7 @@ This repository contains the MATLAB library implementing the data fusion algorit
 
 The code is written in Matlab. The datasets can be found there: https://drive.google.com/open?id=0B-KnQP3_HDffZ1J0UUU4MXRhMXM. 
 
-The code uses the ScatNet library implementing the Scattering Transformation which can be obtained at this adress http://www.di.ens.fr/data/software/scatnet/ .
+The code uses the ScatNet toolbox implementing the Scattering Transformation, all the necessary scripts are stored in the folder scatnet-0.2. More details can be found at this adress http://www.di.ens.fr/data/software/scatnet/ .
 
 Some of the scripts used have been published previously:
 - Lim, Bomyi, et al. "Dynamics of inductive ERK signaling in the Drosophila embryo." Current Biology 25.13 (2015): 1784-1790.
