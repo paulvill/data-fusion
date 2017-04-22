@@ -1,5 +1,5 @@
-addpath_embtime2d
-presets
+addpath_datafusion
+
 %%
 
 % parameters
@@ -111,7 +111,7 @@ for u = 1:length(n_unlbds),
             
             % the semi-supervised learning problem is solved accordingly
             [T, Tu, Tl] = transformation(indl,indu);
-            [inv_u] = ssl_estimate4( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, T, l1);
             
             % we obtain the label prediction
             fu = inv_u*M(3,indl)';
