@@ -1,5 +1,4 @@
-addpath_embtime2d
-presets
+addpath_datafusion
 
 %%
 % color movies using semi supervised learning 
@@ -138,7 +137,7 @@ a_snapshots = 10;
 b_snapshots = 1.0;
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set1_reduced/';%'data/embryos_noyolk';%'data/drosophila_fixed_images';
+snapshot_opt.data_dir = 'data/data_set1/';
 snapshot_opt.image_name = 'ordered';%'emb';
 % snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -210,7 +209,7 @@ a_snapshots = 10;
 b_snapshots = 1.0;
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set2_reduced/';%'data/aligned_images';
+snapshot_opt.data_dir = 'data/data_set2/';
 snapshot_opt.image_name = 'emb';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -268,7 +267,7 @@ fprintf('OK\n');
 %%% loading the other channels
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set2_reduced/';%'data/aligned_images';
+snapshot_opt.data_dir = 'data/data_set2/';
 snapshot_opt.image_name = 'ind';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -310,7 +309,7 @@ b_snapshots = 0.5;
 
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set3_reduced/';%'data/ind_rho_dpERK';
+snapshot_opt.data_dir = 'data/data_set3/';
 snapshot_opt.image_name = 'emb';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -365,7 +364,7 @@ fprintf('OK\n');
 %%% loading the other channels
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set3_reduced/';%'data/aligned_images';
+snapshot_opt.data_dir = 'data/data_set3/';
 snapshot_opt.image_name = 'ind';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -404,7 +403,7 @@ a_snapshots = 10;
 b_snapshots = 1.0;
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set4/';%'data/aligned_images';
+snapshot_opt.data_dir = 'data/data_set4/';
 snapshot_opt.image_name = 'emb';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -415,7 +414,6 @@ snapshots4 = load_movie_set(snapshot_opt);
 snapshots4.times = [1:numel(snapshots4.times)]';
 fprintf('OK\n');
 
-% snapshots4.images(:,:,[1,2,3],:) = snapshots4.images(:,:,[3,2,1],:)
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -462,7 +460,7 @@ fprintf('OK\n');
 %%% loading the other channels
 
 % Load the snapshots.
-snapshot_opt.data_dir = 'data/data_set4/';%'data/aligned_images';
+snapshot_opt.data_dir = 'data/data_set4/';
 snapshot_opt.image_name = 'ind_rho';
 snapshot_opt.angles_name = 'fixed_thetas.txt';
 snapshot_opt.npixels = npixels;
@@ -711,7 +709,7 @@ for u = M,%[1,M],
             
             [T, Tu, Tl] = transformation(indl_k,indu_k);
             
-            [inv_u] = ssl_estimate4( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, T, l1);
             
             npixels = 512;
             
@@ -824,7 +822,7 @@ for u = [1,M],
             
             [T, Tu, Tl] = transformation(indl_k,indu_k);
             
-            [inv_u] = ssl_estimate4( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, T, l1);
             
             npixels = 512;
             
@@ -948,7 +946,7 @@ for u = [1,M],
             
             [T, Tu, Tl] = transformation(indl_k,indu_k);
             
-            [inv_u] = ssl_estimate4( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, T, l1);
             
             npixels = 512;
             
@@ -1070,7 +1068,7 @@ for u = [1,M],
             
             [T, Tu, Tl] = transformation(indl_k,indu_k);
             
-            [inv_u] = ssl_estimate4( W, D, T, l1);
+            [inv_u] = ssl_estimate( W, D, T, l1);
             
             npixels = 512;
             
