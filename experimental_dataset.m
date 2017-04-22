@@ -1024,175 +1024,142 @@ rho(:,:,3,:) = col(5,3)*movies_colored_rho.images(:,:,2,:);
 
 
 %%
+fused = [];
+
+fused = nuclei(:,:,:,:) + twi(:,:,:,:) + ind(:,:,:,:) + dl(:,:,:,:) + rho(:,:,:,:) + dpERK(:,:,:,:);
+fused(:,:,1,:) = fused(:,:,1,:)/max(max(max(fused(:,:,1,:))));
+fused(:,:,2,:) = fused(:,:,2,:)/max(max(max(fused(:,:,2,:))));
+fused(:,:,3,:) = fused(:,:,3,:)/max(max(max(fused(:,:,3,:))));
+
+%% save the fused movie with all the channels together
+
+mkdir('coloredmovie');
+
+indtemp = find(all.movie_idx == 5);
+figure, 
+for k = 1:length(indtemp),
+    imagesc(fused(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(fused(:,:,:,indtemp(k)),['coloredmovie/',num2str(k),'.png']);
+end
+
+% save the fused movie with all channels separated as gray scale
+
+mkdir('coloredmovie/grayscale');
+
+indtemp = find(all.movie_idx == 5);
+
+% nuclei
 imtemp = [];
+imtemp = movies_colored_dpERK.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_dpERK.images(:,:,1,:);
+imtemp(:,:,2,:) = movies_colored_dpERK.images(:,:,1,:);
+imtemp(:,:,3,:) = movies_colored_dpERK.images(:,:,1,:);
 
-imtemp = nuclei(:,:,:,:) + twi(:,:,:,:) + ind(:,:,:,:) + dl(:,:,:,:) + rho(:,:,:,:) + dpERK(:,:,:,:);
-imtemp(:,:,1,:) = imtemp(:,:,1,:)/max(max(max(imtemp(:,:,1,:))));
-imtemp(:,:,2,:) = imtemp(:,:,2,:)/max(max(max(imtemp(:,:,2,:))));
-imtemp(:,:,3,:) = imtemp(:,:,3,:)/max(max(max(imtemp(:,:,3,:))));
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/nuclei',num2str(k),'.png']);
+end
 
+% dpERK
 
-%%
-% mkdir('coloredmovie_4datasets');
-% indtemp = find(all.movie_idx == 5);
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/',num2str(k),'.png']);
-% end
+imtemp = [];
+imtemp = movies_colored_dpERK.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_dpERK.images(:,:,2,:);
+imtemp(:,:,2,:) = movies_colored_dpERK.images(:,:,2,:);
+imtemp(:,:,3,:) = movies_colored_dpERK.images(:,:,2,:);
 
-%% 
-% 
-% mkdir('coloredmovie_4datasets/grayscale');
-% 
-% indtemp = find(all.movie_idx == 5);
-% 
-% % nuclei
-% imtemp = [];
-% imtemp = movies_colored_dpERK.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_dpERK.images(:,:,1,:);
-% imtemp(:,:,2,:) = movies_colored_dpERK.images(:,:,1,:);
-% imtemp(:,:,3,:) = movies_colored_dpERK.images(:,:,1,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/nuclei',num2str(k),'.png']);
-% end
-% 
-% % dpERK
-% 
-% imtemp = [];
-% imtemp = movies_colored_dpERK.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_dpERK.images(:,:,2,:);
-% imtemp(:,:,2,:) = movies_colored_dpERK.images(:,:,2,:);
-% imtemp(:,:,3,:) = movies_colored_dpERK.images(:,:,2,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/dpERK',num2str(k),'.png']);
-% end
-% 
-% % twist 
-% 
-% imtemp = [];
-% imtemp = movies_colored_twi.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_twi.images(:,:,2,:);
-% imtemp(:,:,2,:) = movies_colored_twi.images(:,:,2,:);
-% imtemp(:,:,3,:) = movies_colored_twi.images(:,:,2,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/twist',num2str(k),'.png']);
-% end
-% 
-% % ind
-% 
-% imtemp = [];
-% imtemp = movies_colored_ind.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_ind.images(:,:,2,:);
-% imtemp(:,:,2,:) = movies_colored_ind.images(:,:,2,:);
-% imtemp(:,:,3,:) = movies_colored_ind.images(:,:,2,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/ind',num2str(k),'.png']);
-% end
-% 
-% % dorsal
-% 
-% imtemp = [];
-% imtemp = movies_colored_dl.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_dl.images(:,:,2,:);
-% imtemp(:,:,2,:) = movies_colored_dl.images(:,:,2,:);
-% imtemp(:,:,3,:) = movies_colored_dl.images(:,:,2,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/dorsal',num2str(k),'.png']);
-% end
-% 
-% % rhomboid
-% 
-% imtemp = [];
-% imtemp = movies_colored_rho.images(:,:,:,:);
-% imtemp(:,:,1,:) = movies_colored_rho.images(:,:,2,:);
-% imtemp(:,:,2,:) = movies_colored_rho.images(:,:,2,:);
-% imtemp(:,:,3,:) = movies_colored_rho.images(:,:,2,:);
-% 
-% figure, 
-% for k = 1:length(indtemp),
-%     imagesc(imtemp(:,:,:,indtemp(k)));
-%     pause(0.1);
-%     imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie_4datasets/grayscale/rhomboid',num2str(k),'.png']);
-% end
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/dpERK',num2str(k),'.png']);
+end
+
+% twist 
+
+imtemp = [];
+imtemp = movies_colored_twi.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_twi.images(:,:,2,:);
+imtemp(:,:,2,:) = movies_colored_twi.images(:,:,2,:);
+imtemp(:,:,3,:) = movies_colored_twi.images(:,:,2,:);
+
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/twist',num2str(k),'.png']);
+end
+
+% ind
+
+imtemp = [];
+imtemp = movies_colored_ind.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_ind.images(:,:,2,:);
+imtemp(:,:,2,:) = movies_colored_ind.images(:,:,2,:);
+imtemp(:,:,3,:) = movies_colored_ind.images(:,:,2,:);
+
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/ind',num2str(k),'.png']);
+end
+
+% dorsal
+
+imtemp = [];
+imtemp = movies_colored_dl.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_dl.images(:,:,2,:);
+imtemp(:,:,2,:) = movies_colored_dl.images(:,:,2,:);
+imtemp(:,:,3,:) = movies_colored_dl.images(:,:,2,:);
+
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/dorsal',num2str(k),'.png']);
+end
+
+% rhomboid
+
+imtemp = [];
+imtemp = movies_colored_rho.images(:,:,:,:);
+imtemp(:,:,1,:) = movies_colored_rho.images(:,:,2,:);
+imtemp(:,:,2,:) = movies_colored_rho.images(:,:,2,:);
+imtemp(:,:,3,:) = movies_colored_rho.images(:,:,2,:);
+
+figure, 
+for k = 1:length(indtemp),
+    imagesc(imtemp(:,:,:,indtemp(k)));
+    pause(0.1);
+    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/rhomboid',num2str(k),'.png']);
+end
 
 %%
-% 
-% indtemp = find(all.movie_idx == 5);
-% 
-% writerObj = VideoWriter(['coloredmovie_3datasets/all_colors_reconstructed_movie.avi']);
-% 
-% fig = figure('position',[100 100 512 512]);
-% open(writerObj);
-% set(gca,'nextplot','replacechildren');
-% set(gcf,'Renderer','zbuffer');
-% 
-% ax = gca;
-% ax.NextPlot = 'replaceChildren';
-% axis off;
-% pause(1)
-% for i = 1:length(indtemp),
-%    imagesc(imtemp(:,:,:,indtemp(i)));
-%     pause(0.1);
-%        frame = getframe(fig);
-%     writeVideo(writerObj,frame);
-%     pause(0.2)
-% 
-% end
-% close(writerObj);
 
+indtemp = find(all.movie_idx == 5);
 
-%%
-% indtemp = find(all.movie_idx == 5);
-% % 
-% d = date;
-% 
-% mkdir(d);
-% 
-% writerObj = VideoWriter([d,'movie_dpERK.avi']);
-% % 
-% fig = figure;
-% axis off;
-% % 
-% open(writerObj);
-% set(gca,'nextplot','replacechildren');
-% set(gcf,'Renderer','zbuffer');
-% % 
-% ax = gca;
-% ax.NextPlot = 'replaceChildren';
-% % 
-% pause(1)
-% for i = 1:length(indtemp),
-%     imshow(movies_colored_dpERK.images(:,:,:,i));
-%     axis off;
-%     xlim([0 512])
-%     ylim([0 512])
-%     frame = getframe(fig);
-%     writeVideo(writerObj,frame);
-%     pause(0.2)
-% 
-% end
-% close(writerObj);
+writerObj = VideoWriter(['coloredmovie/all_colors_reconstructed_movie.avi']);
 
+fig = figure('position',[100 100 512 512]);
+open(writerObj);
+set(gca,'nextplot','replacechildren');
+set(gcf,'Renderer','zbuffer');
+
+ax = gca;
+ax.NextPlot = 'replaceChildren';
+axis off;
+pause(1)
+for i = 1:length(indtemp),
+   imagesc(fused(:,:,:,indtemp(i)));
+    pause(0.1);
+       frame = getframe(fig);
+    writeVideo(writerObj,frame);
+    pause(0.2)
+
+end
+close(writerObj);
 
