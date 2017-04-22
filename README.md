@@ -1,7 +1,7 @@
 # data-fusion
 This repository contains the MATLAB library implementing the data fusion algorithm on a computational example and experimental cross-sections of developing fly embryos. It is associated to the article "Synthesizing developmental trajectories by data fusion", Villoutreix P., Andén J., et al., 2017.
 
-The code is written in Matlab. The datasets can be found at this URL. 
+The code is written in Matlab. The datasets can be found there: https://drive.google.com/open?id=0B-KnQP3_HDffZ1J0UUU4MXRhMXM. 
 
 The code uses the ScatNet library implementing the Scattering Transformation which can be obtained at this adress http://www.di.ens.fr/data/software/scatnet/ .
 
