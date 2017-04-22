@@ -1,5 +1,5 @@
-addpath_embtime2d
-presets
+addpath_datafusion
+
 %%
 
 % parameters
@@ -44,7 +44,7 @@ M(2,:) = [a*([t2;t1]).*(sin(b*([t2;t1]))+sigma(2)*randn(n,1))];
 M(3,indl1) = c1*t2.*(exp(-d1*(t2-e1).^2)+sigma(3)*randn(l1,1));
 
 % visualizing (x1, x2)
-cmap = gray(l1+l2); %winter(l1+l2);
+cmap = gray(l1+l2);
 cmap = cmap(end:-1:1,:);
 
 figure,
@@ -58,7 +58,6 @@ ylabel('x_2');
 set(gca,'fontsize', 24);
 
 % visualizing (x1, x2, t)
-cmap2 = colormap(brewermap(l1+l2,'reds'));
 col2 = [255,98,58]/255;
 close
 
@@ -92,7 +91,7 @@ D = diag(sum(W, 2));
 
 % solving the semi-supervised problem
 [T, Tu, Tl] = transformation(indl1,indl2);
-[inv_u] = ssl_estimate4(W, D, T, l1);
+[inv_u] = ssl_estimate(W, D, T, l1);
 fu = inv_u*M(3,indl1)';
 
 
@@ -137,9 +136,9 @@ end
 hold on,
 for j = 1:length(indl1),
     i = indl1_temp(j);
-
-   scatter(t2(i),M(3,indl1(i)),50,col2,'filled');
-hold on,
+    
+    scatter(t2(i),M(3,indl1(i)),50,col2,'filled');
+    hold on,
 end
 xlabel('t');
 ylabel('y');
