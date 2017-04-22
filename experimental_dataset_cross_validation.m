@@ -668,8 +668,6 @@ for u = M,%[1,M],
         nmov = length(indu_mask);
         
         W = AffinityFromDistance(V,10);
-        D = diag(sum(W, 2));
-        
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig1.movie_idx);
@@ -706,7 +704,7 @@ for u = M,%[1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
+            [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
             
@@ -773,8 +771,6 @@ for u = [1,M],
         nmov = length(indu_mask);
         
         W = AffinityFromDistance(V,10);
-        D = diag(sum(W, 2));
-        
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig2.movie_idx);
@@ -816,7 +812,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
+            [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
             
@@ -894,8 +890,6 @@ for u = [1,M],
         nmov = length(indu_mask);
         
         W = AffinityFromDistance(V,10);
-        D = diag(sum(W, 2));
-        
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig3.movie_idx);
@@ -937,7 +931,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
+            [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
             
@@ -1013,8 +1007,6 @@ for u = [1,M],
         nmov = length(indu_mask);
         
         W = AffinityFromDistance(V,10);
-        D = diag(sum(W, 2));
-        
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig4.movie_idx);
@@ -1056,7 +1048,7 @@ for u = [1,M],
             l1 = length(indl_k);
             l2 = length(indu_k);
             
-            [inv_u] = ssl_estimate( W, D, indl_k, indu_k);
+            [inv_u] = ssl_estimate( W, indl_k, indu_k);
             
             npixels = 512;
             

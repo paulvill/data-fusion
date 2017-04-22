@@ -87,10 +87,9 @@ saveas(h,[d,'/x1_x2_labels'],'png');
 % computing pairwise differences between pairs of (x1(i), x2(i)) and (x1(j), x2(j))
 dist = distances(M(1:2,:));
 W = AffinityFromDistance(dist,10);
-D = diag(sum(W, 2));
 
 % solving the semi-supervised problem
-[inv_u] = ssl_estimate(W, D, indl1,indl2);
+[inv_u] = ssl_estimate(W,indl1,indl2);
 fu = inv_u*M(3,indl1)';
 
 

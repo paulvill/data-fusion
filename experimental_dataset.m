@@ -648,7 +648,6 @@ t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
-D = diag(sum(W, 2));
 
 % indl = find(all.movie_idx(mask) == 9)';
 % indu = find(all.movie_idx(mask) ~= 9)';
@@ -657,7 +656,7 @@ indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 9 & all.movie_idx(
 l1 = length(indl);
 l2 = length(indu);
 
-[inv_u] = ssl_estimate( W, D, indl, indu);
+[inv_u] = ssl_estimate( W, indl, indu);
 
 npixels = 512;
 movies_colored_dpERK = movies_orig_sub;
@@ -715,7 +714,6 @@ t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
-D = diag(sum(W, 2));
 
 indl = find(all.movie_idx(mask) == 8 | all.movie_idx(mask) == 11)';
 indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 11)';
@@ -723,7 +721,7 @@ indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 11)';
 l1 = length(indl);
 l2 = length(indu);
 
-[inv_u] = ssl_estimate( W, D, indl, indu);
+[inv_u] = ssl_estimate( W, indl, indu);
 
 npixels = 512;
 movies_colored_twi = movies_orig_sub;
@@ -783,7 +781,6 @@ t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
-D = diag(sum(W, 2));
 
 indl = find(all.movie_idx(mask) == 9 | all.movie_idx(mask) == 11)';
 indu = find(all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 11)';
@@ -791,7 +788,7 @@ indu = find(all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 11)';
 l1 = length(indl);
 l2 = length(indu);
 
-[inv_u] = ssl_estimate( W, D, indl, indu);
+[inv_u] = ssl_estimate( W, indl, indu);
 
 npixels = 512;
 movies_colored_ind = movies_orig_sub;
@@ -851,7 +848,6 @@ t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
-D = diag(sum(W, 2));
 
 indl = find(all.movie_idx(mask) == 9)';
 indu = find(all.movie_idx(mask) ~= 9)';
@@ -859,7 +855,7 @@ indu = find(all.movie_idx(mask) ~= 9)';
 l1 = length(indl);
 l2 = length(indu);
 
-[inv_u] = ssl_estimate( W, D, indl, indu);
+[inv_u] = ssl_estimate( W, indl, indu);
 
 npixels = 512;
 movies_colored_dl = movies_orig_sub;
@@ -918,7 +914,6 @@ t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
 W = AffinityFromDistance(V,10);
-D = diag(sum(W, 2));
 
 indl = find(all.movie_idx(mask) >9)';
 indu = find(all.movie_idx(mask) < 10)';
@@ -927,7 +922,7 @@ l1 = length(indl);
 l2 = length(indu);
 
 
-[inv_u] = ssl_estimate( W, D, indl, indu);
+[inv_u] = ssl_estimate( W, indl, indu);
 
 npixels = 512;
 movies_colored_rho = movies_orig_sub;

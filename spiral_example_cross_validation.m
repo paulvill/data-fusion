@@ -75,8 +75,7 @@ for u = 1:length(n_unlbds)
         
         % K-Fold Cross-Validation
         dist = distances(M(1:2,:));
-        W = AffinityFromDistance(dist(mask_tot,mask_tot),10);
-        D = diag(sum(W, 2));
+        W = AffinityFromDistance(dist(mask_tot,mask_tot),10); 
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(indl);
@@ -110,7 +109,7 @@ for u = 1:length(n_unlbds)
             l2 = length(indu);
             
             % the semi-supervised learning problem is solved accordingly
-            [inv_u] = ssl_estimate( W, D, indl,indu);
+            [inv_u] = ssl_estimate( W,indl,indu);
             
             % we obtain the label prediction
             fu = inv_u*M(3,indl)';
