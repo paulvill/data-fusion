@@ -1,8 +1,8 @@
 addpath_datafusion
 
-%%
+%% Initialization
 
-% parameters
+% parameters value
 a = 1;
 b = 0.1;
 c1 = 1;
@@ -10,41 +10,48 @@ d1 = 0.005;
 e1 = 65;
 
 
-% labeled data points
+% labeled data points index
 l1 = 120;
 indl1 = 1:l1;
 
-% unlabeled data points
+% unlabeled data points index
 l2 = 300;
 indl2 = l1+1:l1+l2;
 
-% number of points
+% total number of points
 n = l1 + l2;
 
-% matrix containing all the modalities
+% matrix containing the common modality (x^1, x^2) and the labels y
 M = zeros(3,n);
 
 % noise in the various channels
 sigma = [0.02,0.02,0];
 
-% time - for each data point
+% time step - for each data point
+% the time steps of unlabeled data points are evenly distributed between 
+% 1 and 100
 t1 = (1:99/(l2-1):100)';
+% the time steps of labeled data points are randomly drawn between 1 and
+% 100
 t = (1:99/(999):100)';
 t2 = t(randi(length(t),l1,1));
-tsort = sort([t1;t2]);
-indl2_t = find(ismember(tsort,t1));
-[~ , indl1_temp] = sort(t2);
-indl1_t = find(ismember(tsort,sort(t2)));
 
-% common modality
+% ordering the points according to their time steps
+tsort = sort([t1;t2]);
+% unlabeled data points
+indl2_t = find(ismember(tsort,t1));
+% labeled data points
+[~ , indl1_temp] = sort(t2);
+
+% computing common modality values based on time steps
 M(1,:) = [a*([t2;t1]).*(cos(b*([t2;t1]))+sigma(1)*randn(n,1))];
 M(2,:) = [a*([t2;t1]).*(sin(b*([t2;t1]))+sigma(2)*randn(n,1))];
 
-% labels
+% computing label values based on time steps
 M(3,indl1) = c1*t2.*(exp(-d1*(t2-e1).^2)+sigma(3)*randn(l1,1));
 
-%%
-% K-fold cross validation
+%% K-fold cross validation
+ 
 % number of bins
 K = 5;
 
@@ -60,24 +67,28 @@ abs_error = zeros(length(n_unlbds),nrep);
 
 for u = 1:length(n_unlbds) 
     fprintf([num2str(n_unlbds(u)),' \n']);
-    
     for r = 1:nrep
         % defining the n_unlbds(u) subsamples of the unlabeled data points
         nb_unlbld = n_unlbds(u);
         indu = indl2;
         indl = indl1;
         
+        % extracting randomly nb_unlbld unlabeled data points from the
+        % original set of unlabeled data points
         mask_unlbld = randperm(length(indu),nb_unlbld);
         
+        % the randomly extracted unlabeled data points are reordered and
+        % shifted according to the number of labeled data points
         indu_mask = length(indl)+sort(mask_unlbld);
+        % the combined set of labeled and unlabeled data points
         mask_tot = [indl,indu_mask];
-        nunlbd = length(indu_mask);
-        
-        % K-Fold Cross-Validation
+
+        % computing the affinity matrix on the reduced number of data
+        % points
         dist = distances(M(1:2,:));
         W = AffinityFromDistance(dist(mask_tot,mask_tot),10); 
         
-        % defining the K subsamples of the labeled data points
+        % defining randomly K subsamples of the labeled data points
         nb_labels = length(indl);
         
         ind_l_sub = zeros(nb_labels/K,K);
@@ -89,7 +100,7 @@ for u = 1:length(n_unlbds)
             mask(ind_temp) = [];
         end
         
-        % predict label value on the on the selected labeled points
+        % predicting label value on the on the selected labeled points
         predicted_labels = zeros(nb_labels,1);
         for k = 1:K
             indu = (1:nb_unlbld);
