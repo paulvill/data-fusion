@@ -13,3 +13,8 @@ Some of the scripts used have been published previously:
 - Lederman, Roy R., and Ronen Talmon. "Common manifold learning using alternating-diffusion."  Tech. Report YALEU/DCS/TR-1497 (2014).
     Scripts are stored in the folder LT14.
     
+The main scripts are 
+- spiral_example.m : implements the data fusion algorithm on a non-linear 1-dimensional trajectory in a 3-dimensional space, knicknamed "spiral".
+- spiral_example_cross_validation.m : implements the K-fold cross-validation on the "spiral".
+- experimental_dataset.m : implements the data fusion on the experimental datasets leading to multimodal movie contain the spatio-temporal dynamics of 5 chemical species
+- experimental_dataset.m : implements the K-fold cross validation on the "experimental datasets".
