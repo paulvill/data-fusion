@@ -17,8 +17,6 @@
 function x_cn = extract_center(x, sz)
 	[x, sz_roll] = unroll_dim(x, length(sz)+1);
 
-	% TODO: The similarities with zero_pad are significant. Needs to be
-	% reduced.
 	sz0 = size(x);
 	sz0 = [sz0 ones(1, length(sz)-length(sz0))];
 	sz0 = sz0(1:length(sz));
