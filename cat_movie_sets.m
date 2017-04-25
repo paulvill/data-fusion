@@ -29,7 +29,7 @@ function movie_set = cat_movie_sets(movie_set1, movie_set2)
     movie_set.times = cat(1, movie_set.times, movie_set2.times);
     movie_set.angles = cat(1, movie_set.angles, movie_set2.angles);
     movie_set.movie_idx = cat(1, movie_set.movie_idx, ...
-        max(movie_set.movie_idx)+movie_set2.movie_idx);
+        max([0; movie_set.movie_idx])+movie_set2.movie_idx);
     movie_set.names = cat(1, movie_set.names, movie_set2.names);
 
     if ndims1 == 3
