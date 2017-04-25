@@ -1,5 +1,11 @@
 root_dir = fileparts(mfilename('fullpath'));
 
+% Subfolders
+addpath(fullfile(root_dir, 'image'));
+addpath(fullfile(root_dir, 'utilities'));
+addpath(fullfile(root_dir, 'examples'));
+addpath(fullfile(root_dir, 'manifold'));
+
 % Scripts from Lim, B. et al., Current Biology, 2015
 addpath(fullfile(root_dir, 'DLL15'));
 % Scripts from Dsilva, C.J. et al., Development, 2015
