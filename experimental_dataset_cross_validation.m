@@ -12,6 +12,9 @@ addpath_datafusion
 
 %% Importing movie frames
 
+% Number of movies to load.
+num_movies = 7;
+
 % Movie/snapshot loading parameters.
 npixels = 512;
 
@@ -37,13 +40,23 @@ diffusion_movie_idx = [1 2 3 4 5 6 7]';
 movies_theta = [-95 -80 -80 -95 -120 -95 -55]';
 
 % Load all the movies.
-movie_opt.data_dir = 'data/movies';
-movie_opt.image_ext = 'avi';
-movie_opt.dim = 3;
-movie_opt.npixels = npixels;
+movies = empty_movie_set(npixels, 3);
 
 fprintf('Loading movies...');
-movies = load_movie_set(movie_opt);
+for k = 1:num_movies
+    movie_opt = struct();
+    movie_opt.data_dir = sprintf('data/movie%d', k);
+    movie_opt.image_name = 'frame';
+    movie_opt.image_ext = 'tif';
+    movie_opt.dim = 2;
+    movie_opt.npixels = npixels;
+
+    movie_k = load_movie_set(movie_opt);
+
+    movie_k.times = [1:numel(movie_k.times)]';
+
+    movies = cat_movie_sets(movies, movie_k);
+end
 fprintf('OK\n');
 
 % Suppress 2nd and 3rd channels. These have no real information.

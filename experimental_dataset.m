@@ -12,6 +12,9 @@ addpath_datafusion
 
 %% Importing movie frames
 
+% Number of movies to load.
+num_movies = 7;
+
 % Movie/snapshot loading parameters.
 npixels = 512;
 
@@ -37,13 +40,23 @@ diffusion_movie_idx = [1 2 3 4 5 6 7]';
 movies_theta = [-95 -80 -80 -95 -120 -95 -55]';
 
 % Load all the movies.
-movie_opt.data_dir = 'data/movies';
-movie_opt.image_ext = 'avi';
-movie_opt.dim = 3;
-movie_opt.npixels = npixels;
+movies = empty_movie_set(npixels, 3);
 
 fprintf('Loading movies...');
-movies = load_movie_set(movie_opt);
+for k = 1:num_movies
+    movie_opt = struct();
+    movie_opt.data_dir = sprintf('data/movie%d', k);
+    movie_opt.image_name = 'frame';
+    movie_opt.image_ext = 'tif';
+    movie_opt.dim = 2;
+    movie_opt.npixels = npixels;
+
+    movie_k = load_movie_set(movie_opt);
+
+    movie_k.times = [1:numel(movie_k.times)]';
+
+    movies = cat_movie_sets(movies, movie_k);
+end
 fprintf('OK\n');
 
 % Suppress 2nd and 3rd channels. These have no real information.
@@ -659,12 +672,12 @@ fprintf(['Movies colored in ',num2str(e),' s \n']);
 movies_colored_dpERK.images = double(movies_colored_dpERK.images);
 
 for movie_id = unique(movies_colored_dpERK.movie_idx)'
-	movie_idx = find(movies_colored_dpERK.movie_idx==movie_id);
+    movie_idx = find(movies_colored_dpERK.movie_idx==movie_id);
 
-	mean_intensities = mean(mean(mean(movies_colored_dpERK.images(:,:,:,movie_idx), 1), 2), 4);
+    mean_intensities = mean(mean(mean(movies_colored_dpERK.images(:,:,:,movie_idx), 1), 2), 4);
 
-	movies_colored_dpERK.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_dpERK.images(:,:,1,movie_idx);
-	movies_colored_dpERK.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_dpERK.images(:,:,2,movie_idx);
+    movies_colored_dpERK.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_dpERK.images(:,:,1,movie_idx);
+    movies_colored_dpERK.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_dpERK.images(:,:,2,movie_idx);
 end
 
 movies_colored_dpERK.images = movies_colored_dpERK.images/max(movies_colored_dpERK.images(:));
@@ -719,12 +732,12 @@ fprintf(['Movies colored in ',num2str(e),' s \n']);
 movies_colored_twi.images = double(movies_colored_twi.images);
 
 for movie_id = unique(movies_colored_twi.movie_idx)'
-	movie_idx = find(movies_colored_twi.movie_idx==movie_id);
+    movie_idx = find(movies_colored_twi.movie_idx==movie_id);
 
-	mean_intensities = mean(mean(mean(movies_colored_twi.images(:,:,:,movie_idx), 1), 2), 4);
+    mean_intensities = mean(mean(mean(movies_colored_twi.images(:,:,:,movie_idx), 1), 2), 4);
 
-	movies_colored_twi.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_twi.images(:,:,1,movie_idx);
-	movies_colored_twi.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_twi.images(:,:,2,movie_idx);
+    movies_colored_twi.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_twi.images(:,:,1,movie_idx);
+    movies_colored_twi.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_twi.images(:,:,2,movie_idx);
 end
 
 movies_colored_twi.images = movies_colored_twi.images/max(movies_colored_twi.images(:));
@@ -779,12 +792,12 @@ fprintf(['Movies colored in ',num2str(e),' s \n']);
 movies_colored_ind.images = double(movies_colored_ind.images);
 
 for movie_id = unique(movies_colored_ind.movie_idx)'
-	movie_idx = find(movies_colored_ind.movie_idx==movie_id);
+    movie_idx = find(movies_colored_ind.movie_idx==movie_id);
 
-	mean_intensities = mean(mean(mean(movies_colored_ind.images(:,:,:,movie_idx), 1), 2), 4);
+    mean_intensities = mean(mean(mean(movies_colored_ind.images(:,:,:,movie_idx), 1), 2), 4);
 
-	movies_colored_ind.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_ind.images(:,:,1,movie_idx);
-	movies_colored_ind.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_ind.images(:,:,2,movie_idx);
+    movies_colored_ind.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_ind.images(:,:,1,movie_idx);
+    movies_colored_ind.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_ind.images(:,:,2,movie_idx);
 end
 
 movies_colored_ind.images = movies_colored_ind.images/max(movies_colored_ind.images(:));
@@ -839,12 +852,12 @@ fprintf(['Movies colored in ',num2str(e),' s \n']);
 movies_colored_dl.images = double(movies_colored_dl.images);
 
 for movie_id = unique(movies_colored_dl.movie_idx)'
-	movie_idx = find(movies_colored_dl.movie_idx==movie_id);
+    movie_idx = find(movies_colored_dl.movie_idx==movie_id);
 
-	mean_intensities = mean(mean(mean(movies_colored_dl.images(:,:,:,movie_idx), 1), 2), 4);
+    mean_intensities = mean(mean(mean(movies_colored_dl.images(:,:,:,movie_idx), 1), 2), 4);
 
-	movies_colored_dl.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_dl.images(:,:,1,movie_idx);
-	movies_colored_dl.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_dl.images(:,:,2,movie_idx);
+    movies_colored_dl.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_dl.images(:,:,1,movie_idx);
+    movies_colored_dl.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_dl.images(:,:,2,movie_idx);
 end
 
 movies_colored_dl.images = movies_colored_dl.images/max(movies_colored_dl.images(:));
@@ -899,12 +912,12 @@ fprintf(['Movies colored in ',num2str(e),' s \n']);
 movies_colored_rho.images = double(movies_colored_rho.images);
 
 for movie_id = unique(movies_colored_rho.movie_idx)'
-	movie_idx = find(movies_colored_rho.movie_idx==movie_id);
+    movie_idx = find(movies_colored_rho.movie_idx==movie_id);
 
-	mean_intensities = mean(mean(mean(movies_colored_rho.images(:,:,:,movie_idx), 1), 2), 4);
+    mean_intensities = mean(mean(mean(movies_colored_rho.images(:,:,:,movie_idx), 1), 2), 4);
 
-	movies_colored_rho.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_rho.images(:,:,1,movie_idx);
-	movies_colored_rho.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_rho.images(:,:,2,movie_idx);
+    movies_colored_rho.images(:,:,1,movie_idx) = 1./mean_intensities(1)*movies_colored_rho.images(:,:,1,movie_idx);
+    movies_colored_rho.images(:,:,2,movie_idx) = 1./mean_intensities(2)*movies_colored_rho.images(:,:,2,movie_idx);
 end
 
 movies_colored_rho.images = movies_colored_rho.images/max(movies_colored_rho.images(:));

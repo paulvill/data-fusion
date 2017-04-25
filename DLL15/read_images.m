@@ -35,11 +35,11 @@ try
     % read in first image to see if it is grayscale or color
     if DIM == 2
         i = 1;
-        filename = sprintf('%s/%s%02d.%s', IMAGE_DIR, IMAGE_NAME, i, IMAGE_EXT);
+        filename = sprintf('%s/%s%04d.%s', IMAGE_DIR, IMAGE_NAME, i, IMAGE_EXT);
     else
         i = 1;
         j = 1;
-        filename = sprintf('%s/%s%02d/%s%02d.%s', IMAGE_DIR, IMAGE_NAME, i, STACK_NAME, j, IMAGE_EXT);
+        filename = sprintf('%s/%s%02d/%s%04d.%s', IMAGE_DIR, IMAGE_NAME, i, STACK_NAME, j, IMAGE_EXT);
     end
     im_tmp = imread(filename);
     npixels = size(im_tmp, 1);
@@ -78,7 +78,7 @@ try
         multi_waitbar(i/NIMAGES, h);
         if DIM == 2
             % create filename of new image
-            filename = sprintf('%s/%s%02d.%s', IMAGE_DIR, IMAGE_NAME, i, IMAGE_EXT);
+            filename = sprintf('%s/%s%04d.%s', IMAGE_DIR, IMAGE_NAME, i, IMAGE_EXT);
             
             % read image
             im_tmp = imread(filename);
