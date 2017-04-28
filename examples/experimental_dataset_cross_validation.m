@@ -40,7 +40,7 @@ diffusion_movie_idx = [1 2 3 4 5 6 7]';
 movies_theta = [-95 -80 -80 -95 -120 -95 -55]';
 
 % Load all the movies.
-movies = empty_movie_set(npixels, 3);
+movies = empty_movie_set(npixels, 1);
 
 fprintf('Loading movies...');
 for k = 1:num_movies
@@ -59,9 +59,6 @@ for k = 1:num_movies
 end
 fprintf('OK\n');
 
-% Suppress 2nd and 3rd channels. These have no real information.
-movies.images(:,:,2:3,:) = 0;
-
 % Save original movies for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
 movies_orig = movies;
@@ -70,7 +67,7 @@ movies_orig = movies;
 fprintf('Centering movies...');
 % we center movies sequence-wise to avoid jittering in the reconstruction
 for i = 1:max(movies.movie_idx)
-movies_orig.images(:,:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,:,movies.movie_idx == i),1,'TRUE');
+movies_orig.images(:,:,movies.movie_idx == i) = mean_center_zstack(movies_orig.images(:,:,movies.movie_idx == i),1,'TRUE');
 end
 fprintf('OK\n');
 
@@ -84,9 +81,6 @@ movies.images_orig = movies_orig.images;
 
 % Resize images to make them easier to deal with computationally.
 movies.images = resize_images(movies.images, npixels_dm);
-
-% Extract the first channel for movies
-movies.images = permute(movies.images(:,:,1,:), [1 2 4 3]);
 
 % The movies and snapshots come in as 8-bit integers. For convenience, we'll
 % want to treat them as floating-point numbers, however.
