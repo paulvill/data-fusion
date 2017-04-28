@@ -311,7 +311,7 @@ snapshots3 = load_movie_set(snapshot_opt);
 snapshots3.times = [1:numel(snapshots3.times)]';
 fprintf('OK\n');
 
-snapshots3.images(:,:,[1,2,3],:) = snapshots3.images(:,:,[3,2,1],:)
+snapshots3.images(:,:,[1,2,3],:) = snapshots3.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
@@ -366,7 +366,7 @@ snapshots3_1 = load_movie_set(snapshot_opt);
 snapshots3_1.times = [1:numel(snapshots3_1.times)]';
 fprintf('OK\n');
 
-snapshots3_1.images(:,:,[1,2,3],:) = snapshots3_1.images(:,:,[3,2,1],:)
+snapshots3_1.images(:,:,[1,2,3],:) = snapshots3_1.images(:,:,[3,2,1],:);
 
 % Save original movies and snapshots for colorizing later. We don't want to
 % use all the preprocessing that comes after this.
