@@ -78,11 +78,7 @@ mask = ((X-(NPIXELS+1)/2).^2 + (Y-(NPIXELS+1)/2).^2 < ((NPIXELS+1)/2)^2);
 
 %% apply image functions to each image
 
-h = multi_waitbar(0, 'Applying image functions...');
-
 for i=1:nimages
-    multi_waitbar(i/nimages, h);
-    
     % 3D: extract relevant z-stack
     if DIM == 3
         if nchannels > 1
@@ -149,8 +145,6 @@ for i=1:nimages
         end
     end
 end
-
-multi_waitbar(Inf, h);
 
 function IM2 = apply_image_functions_oneimage(IM1, NORMALIZE_SIGNAL, SIGNAL_BLUR_RADIUS, SIGNAL_SCALE)
 %APPLY_IMAGE_FUNCTIONS_ONEIMAGE Applies relevant image functions to a

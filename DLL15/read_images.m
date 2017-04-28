@@ -30,8 +30,6 @@ function [IMAGES, NCHANNELS] = read_images(IMAGE_DIR, IMAGE_NAME, IMAGE_EXT, STA
 
 %%
 try
-    h = multi_waitbar(0, 'Reading images...');
-    
     % read in first image to see if it is grayscale or color
     if DIM == 2
         i = 1;
@@ -75,7 +73,6 @@ try
     
     % read in each image
     for i=1:NIMAGES
-        multi_waitbar(i/NIMAGES, h);
         if DIM == 2
             % create filename of new image
             filename = sprintf('%s/%s%04d.%s', IMAGE_DIR, IMAGE_NAME, i, IMAGE_EXT);
@@ -112,7 +109,6 @@ try
             end
         end
     end
-    multi_waitbar(Inf, h);
     
 catch ME
     if strcmp(ME.identifier, 'MATLAB:imagesci:imread:fileDoesNotExist')
