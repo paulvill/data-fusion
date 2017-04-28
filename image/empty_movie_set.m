@@ -22,7 +22,12 @@ function movie_set = empty_movie_set(npixels, channels)
 
     movie_set = struct();
 
-    movie_set.images = zeros([npixels*ones(1, 2) channels 0]);
+    if channels == 1
+        movie_set.images = zeros([npixels*ones(1, 2) 0]);
+    else
+        movie_set.images = zeros([npixels*ones(1, 2) channels 0]);
+    end
+
     movie_set.times = zeros(0, 1);
     movie_set.angles = zeros(0, 1);
     movie_set.movie_idx = zeros(0, 1);
