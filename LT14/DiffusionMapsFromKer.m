@@ -67,7 +67,7 @@ function [MapEmbd, UWighted, d_t, svals, U,V] = DiffusionMapsFromKer( K , t )
 %
 %   Compute the diffusion distance at time t.
 %
-    d_t = pdist2(MapEmbd,MapEmbd, 'euclidean');
+    d_t = distances(MapEmbd');
 
 end
 
