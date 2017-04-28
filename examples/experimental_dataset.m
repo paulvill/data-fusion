@@ -77,8 +77,6 @@ movies_orig.images = rotate_images(movies_orig.images, ...
     movies_theta(diffusion_movie_idx(movies_orig.movie_idx)));
 fprintf('OK\n');
 
-movies.images_orig = movies_orig.images;
-
 % Resize images to make them easier to deal with computationally.
 movies.images = resize_images(movies.images, npixels_dm);
 
@@ -145,8 +143,6 @@ fprintf('Centering images...');
 center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig1.images = matfun(center_im, snapshots_orig1.images, 4);
 fprintf('OK\n');
-
-snapshots1.images_orig = snapshots_orig1.images;
 
 % Resize images to make them easier to deal with computationally.
 snapshots1.images = resize_images(snapshots1.images, npixels_dm);
@@ -216,8 +212,6 @@ fprintf('Centering images...');
 center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig2.images = matfun(center_im, snapshots_orig2.images, 4);
 fprintf('OK\n');
-
-snapshots2.images_orig = snapshots_orig2.images;
 
 % Resize images to make them easier to deal with computationally.
 snapshots2.images = resize_images(snapshots2.images, npixels_dm);
@@ -407,8 +401,6 @@ fprintf('Centering images...');
 center_im = @(im)(mean_center_image(im, 1, true, 15));
 snapshots_orig4.images = matfun(center_im, snapshots_orig4.images, 4);
 fprintf('OK\n');
-
-snapshots4.images_orig = snapshots_orig4.images;
 
 % Resize images to make them easier to deal with computationally.
 snapshots4.images = resize_images(snapshots4.images, npixels_dm);
