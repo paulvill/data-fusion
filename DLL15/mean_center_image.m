@@ -65,7 +65,7 @@ if RESIZE_IMAGE
         IMAGE2 = imresize_compat(IMAGE2(idx3:(idx4+2*nbuffer), idx1:(idx2+2*nbuffer),:), [npixels npixels]);
     else
         IMAGE2 = padarray(IMAGE, [nbuffer nbuffer]);
-        IMAGE2 = imresize(IMAGE2(idx3:(idx4+2*nbuffer), idx1:(idx2+2*nbuffer)), [npixels npixels]);
+        IMAGE2 = imresize_compat(IMAGE2(idx3:(idx4+2*nbuffer), idx1:(idx2+2*nbuffer)), [npixels npixels]);
     end
 % otherwise, mean-center image
 else
