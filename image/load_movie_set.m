@@ -55,43 +55,22 @@ function movies = load_movie_set(movie_opt)
     angles = {};
     movie_idx = {};
 
-    % Loading image files or movie files?
-    is_movie_files = strcmp(movie_opt.image_ext, 'avi');
-
     % Find movies (as subfolders or movie files).
     files = dir(movie_opt.data_dir);
 
-    if ~is_movie_files
-        folders = files([files.isdir]==true);
-        folders = {folders.name};
+    folders = files([files.isdir]==true);
+    folders = {folders.name};
 
-        folders = folders(~strncmp(folders, '.', 1));
+    folders = folders(~strncmp(folders, '.', 1));
 
-        if numel(folders) == 0
-            % No subdirectories are found so root must contain the images.
-            folders = {''};
-        end
-
-        [images, times, angles, movie_idx, names] = ...
-            load_image_movies(folders, movie_opt);
-    else
-        files = files([files.isdir]==false);
-        files = {files.name};
-
-        files = files(~strncmp(files, '.', 1));
-
-        filter_fun = @(f)((length(f)>4) && ...
-            strcmp(f(end-3:end), ['.' movie_opt.image_ext]));
-        files = files(cellfun(filter_fun, files));
-        
-        if length(movie_opt.subset)>0,
-            files = {files{movie_opt.subset}};
-        end
-        
-        [images, times, angles, movie_idx, names] = ...
-            load_movie_files(files, movie_opt);
+    if numel(folders) == 0
+        % No subdirectories are found so root must contain the images.
+        folders = {''};
     end
 
+    [images, times, angles, movie_idx, names] = ...
+        load_image_movies(folders, movie_opt);
+    
     % Reshape to get a flat structure for dataset.
     movies.images = cat(movie_opt.dim+1, images{:});
     movies.times = cat(1, times{:});
@@ -139,25 +118,3 @@ function [images, times, angles, movie_idx, names] = load_image_movies( ...
         movie_id = movie_id+1;
     end
 end
-
-function [images, times, angles, movie_idx, names] = load_movie_files( ...
-    files, movie_opt)
-    movie_id = 1;
-    for i = 1:numel(files)
-        video_path = fullfile(movie_opt.data_dir, files{i});
-        [images{movie_id}, times{movie_id}] = ...
-            read_video(video_path, movie_opt.npixels);
-
-        nimages = size(images{movie_id}, ndims(images{movie_id}));
-
-        % No angles available.
-        angles{movie_id} = zeros(nimages, 1);
-
-        movie_idx{movie_id} = movie_id*ones(nimages, 1);
-
-        names{movie_id} = files{i}(1:end-4);
-
-        movie_id = movie_id+1;
-    end
-end
-
