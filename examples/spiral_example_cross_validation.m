@@ -147,7 +147,7 @@ plot(n_unlbds,m,'o','Color',[0.5 0.5 0.5],'MarkerSize',10,'MarkerFaceColor',[0.5
 xlabel('Number of unlabeled points');
 ylabel('Normalized Absolute Error');
 
-d = date;
+d = 'output';
 mkdir(d);
-save([d,'/abs_error_spiral.mat'],'abs_error');
-saveas(h,[d,'/abs_error_spiral'],'png');
+save(fullfile(d, 'abs_error_spiral.mat'),'abs_error');
+saveas(h,fullfile(d, 'abs_error_spiral'),'png');

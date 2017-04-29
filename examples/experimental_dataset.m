@@ -964,19 +964,21 @@ fused(:,:,3,:) = fused(:,:,3,:)/max(max(max(fused(:,:,3,:))));
 %% save the fused movie
 
 %  with all the channels together
-mkdir('coloredmovie');
+d = fullfile('output', 'coloredmovie');
+mkdirp(d);
 
 indtemp = find(all.movie_idx == 5);
 figure, 
 for k = 1:length(indtemp),
     imagesc(fused(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(fused(:,:,:,indtemp(k)),['coloredmovie/',num2str(k),'.png']);
+    imwrite(fused(:,:,:,indtemp(k)),fullfile(d, [num2str(k),'.png']));
 end
 
 % save the fused movie with all channels separated as gray scale
 
-mkdir('coloredmovie/grayscale');
+d = fullfile('output', 'grayscale');
+mkdirp(d);
 
 indtemp = find(all.movie_idx == 5);
 
@@ -991,7 +993,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/nuclei',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['nuclei',num2str(k),'.png']));
 end
 
 % dpERK
@@ -1006,7 +1008,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/dpERK',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['dpERK',num2str(k),'.png']));
 end
 
 % twist 
@@ -1021,7 +1023,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/twist',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['twist',num2str(k),'.png']));
 end
 
 % ind
@@ -1036,7 +1038,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/ind',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['ind',num2str(k),'.png']));
 end
 
 % dorsal
@@ -1051,7 +1053,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/dorsal',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['dorsal',num2str(k),'.png']));
 end
 
 % rhomboid
@@ -1066,7 +1068,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),['coloredmovie/grayscale/rhomboid',num2str(k),'.png']);
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['rhomboid',num2str(k),'.png']));
 end
 
 

@@ -90,9 +90,9 @@ set(gca,'fontsize', 24);
 grid off
 
 % figure is saved
-d = date;
+d = 'output';
 mkdir(d);
-saveas(h,[d,'/x1_x2_labels'],'png');
+saveas(h,fullfile(d, 'x1_x2_labels'),'png');
 
 % computing pairwise differences between pairs of (x1(i), x2(i)) and 
 % (x1(j), x2(j)) and corresponding affinity matrix W = (w_i,j)
@@ -130,9 +130,9 @@ set(gca,'fontsize', 24);
 grid off
 
 % figure is saved
-d = date;
+d = 'output';
 mkdir(d);
-saveas(h,[d,'/x1_x2_predicted_labels'],'png');
+saveas(h,fullfile(d, 'x1_x2_predicted_labels'),'png');
 
 % visualizing the original and predicted labels as a function of time
 h = figure;
@@ -155,7 +155,7 @@ set(gca,'fontsize', 24);
 grid off
 
 % figure is saved
-d = date;
+d = 'output';
 mkdir(d);
-saveas(h,[d,'/labels_t'],'png');
+saveas(h,fullfile(d, 'labels_t'),'png');
 

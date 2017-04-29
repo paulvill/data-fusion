@@ -1071,8 +1071,8 @@ for u = 1:M
 end
 
 %%
-d = date;
-mkdir(d);
-save([d,'/abs_error_all_datasets.mat'],'abs_error');
+d = 'output';
+mkdirp(d);
+save(fullfile(d, 'abs_error_all_datasets.mat'),'abs_error');
 
 
