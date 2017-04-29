@@ -628,6 +628,8 @@ l2 = length(indu);
 
 npixels = 512;
 movies_colored_dpERK = movies_orig_sub;
+movies_colored_dpERK.images = permute(movies_colored_dpERK.images, [1 2 4 3]);
+movies_colored_dpERK.images = cat(3, movies_colored_dpERK.images, zeros(size(movies_colored_dpERK.images)));
 
 e = cputime - t;
 
@@ -686,6 +688,8 @@ l2 = length(indu);
 
 npixels = 512;
 movies_colored_twi = movies_orig_sub;
+movies_colored_twi.images = permute(movies_colored_twi.images, [1 2 4 3]);
+movies_colored_twi.images = cat(3, movies_colored_twi.images, zeros(size(movies_colored_twi.images)));
 im_colored = zeros(npixels, npixels, 1);
 
 e = cputime - t;
@@ -746,6 +750,8 @@ l2 = length(indu);
 
 npixels = 512;
 movies_colored_ind = movies_orig_sub;
+movies_colored_ind.images = permute(movies_colored_ind.images, [1 2 4 3]);
+movies_colored_ind.images = cat(3, movies_colored_ind.images, zeros(size(movies_colored_ind.images)));
 im_colored = zeros(npixels, npixels, 1);
 
 e = cputime - t;
@@ -806,6 +812,8 @@ l2 = length(indu);
 
 npixels = 512;
 movies_colored_dl = movies_orig_sub;
+movies_colored_dl.images = permute(movies_colored_dl.images, [1 2 4 3]);
+movies_colored_dl.images = cat(3, movies_colored_dl.images, zeros(size(movies_colored_dl.images)));
 im_colored = zeros(npixels, npixels, 1);
 
 e = cputime - t;
@@ -866,6 +874,8 @@ l2 = length(indu);
 
 npixels = 512;
 movies_colored_rho = movies_orig_sub;
+movies_colored_rho.images = permute(movies_colored_rho.images, [1 2 4 3]);
+movies_colored_rho.images = cat(3, movies_colored_rho.images, zeros(size(movies_colored_rho.images)));
 im_colored = zeros(npixels, npixels, 1);
 
 e = cputime - t;
