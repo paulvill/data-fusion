@@ -816,7 +816,7 @@ for u = [1,M]
             ind_l_sub{k} = mask_label(ind_temp);
             mask_label(ind_temp) = [];
         end
-        ind_l_sub{K} = mask_label
+        ind_l_sub{K} = mask_label;
         
         t = cputime;
         
