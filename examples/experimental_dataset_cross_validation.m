@@ -630,22 +630,31 @@ for u = 1:M
             e = cputime - t;
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
-            
-            for i = 1:npixels
-                for j = 1:npixels
-                    
-                    Y1 = [double(squeeze(snapshots_orig1.images(i,j,2,indl_k-min(indl_k)+1)))];
-                    fu1 = inv_u*Y1;
-                    
-                    snapshots_recolored1(i,j,ind_l_sub(:,k)) = fu1(end-length(ind_l_sub(:,k))+1:end);
-                    
-                    Y2 = [double(squeeze(snapshots_orig1.images(i,j,3,indl_k-min(indl_k)+1)))];
-                    fu2 = inv_u*Y2;
-                    
-                    snapshots_recolored2(i,j,ind_l_sub(:,k)) = fu2(end-length(ind_l_sub(:,k))+1:end);
-                end
-            end
-            
+
+            Y1 = snapshots_orig1.images(:,:,2,indl_k-min(indl_k)+1);
+            Y1 = double(Y1);
+            Y1 = permute(Y1, [4 1 2 3]);
+            [Y1, sz_roll] = unroll_dim(Y1, 2);
+
+            fu1 = inv_u*Y1;
+            fu1 = fu1(end-length(ind_l_sub(:,k))+1:end,:);
+            fu1 = roll_dim(fu1, sz_roll);
+            fu1 = permute(fu1, [2 3 1]);
+
+            snapshots_recolored1(:,:,ind_l_sub(:,k)) = fu1;
+
+            Y2 = snapshots_orig1.images(:,:,3,indl_k-min(indl_k)+1);
+            Y2 = double(Y2);
+            Y2 = permute(Y2, [4 1 2 3]);
+            [Y2, sz_roll] = unroll_dim(Y2, 2);
+
+            fu2 = inv_u*Y2;
+            fu2 = fu2(end-length(ind_l_sub(:,k))+1:end,:);
+            fu2 = roll_dim(fu2, sz_roll);
+            fu2 = permute(fu2, [2 3 1]);
+
+            snapshots_recolored2(:,:,ind_l_sub(:,k)) = fu2;
+
             e = cputime - t;
             fprintf(['Snapshots recolored in ',num2str(e),' s \n']);
             t = cputime;
@@ -735,26 +744,42 @@ for u = 1:M
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels
-                for j = 1:npixels
-                    
-                    Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
-                    fu1 = inv_u*Y1;
-                    
-                    snapshots_recolored1(i,j,ind_l_sub{k}) = fu1(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y2 = [double(squeeze(im_orig2(i,j,indl_k-min(indl_k)+1)))];
-                    fu2 = inv_u*Y2;
-                    
-                    snapshots_recolored2(i,j,ind_l_sub{k}) = fu2(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y3 = [double(squeeze(im_orig3(i,j,indl_k-min(indl_k)+1)))];
-                    fu3 = inv_u*Y3;
-                    
-                    snapshots_recolored3(i,j,ind_l_sub{k}) = fu3(end-length(ind_l_sub{k})+1:end);
-                end
-            end
-            
+            Y1 = im_orig1(:,:,indl_k-min(indl_k)+1);
+            Y1 = double(Y1);
+            Y1 = permute(Y1, [3 1 2]);
+            [Y1, sz_roll] = unroll_dim(Y1, 2);
+
+            fu1 = inv_u*Y1;
+            fu1 = fu1(end-length(ind_l_sub{k})+1:end,:);
+            fu1 = roll_dim(fu1, sz_roll);
+            fu1 = permute(fu1, [2 3 1]);
+
+            snapshots_recolored1(:,:,ind_l_sub{k}) = fu1;
+
+            Y2 = im_orig2(:,:,indl_k-min(indl_k)+1);
+            Y2 = double(Y2);
+            Y2 = permute(Y2, [3 1 2]);
+            [Y2, sz_roll] = unroll_dim(Y2, 2);
+
+            fu2 = inv_u*Y2;
+            fu2 = fu2(end-length(ind_l_sub{k})+1:end,:);
+            fu2 = roll_dim(fu2, sz_roll);
+            fu2 = permute(fu2, [2 3 1]);
+
+            snapshots_recolored2(:,:,ind_l_sub{k}) = fu2;
+
+            Y3 = im_orig3(:,:,indl_k-min(indl_k)+1);
+            Y3 = double(Y3);
+            Y3 = permute(Y3, [3 1 2]);
+            [Y3, sz_roll] = unroll_dim(Y3, 2);
+
+            fu3 = inv_u*Y3;
+            fu3 = fu3(end-length(ind_l_sub{k})+1:end,:);
+            fu3 = roll_dim(fu3, sz_roll);
+            fu3 = permute(fu3, [2 3 1]);
+
+            snapshots_recolored3(:,:,ind_l_sub{k}) = fu3;
+
             e = cputime - t;
             fprintf(['Snapshots recolored in ',num2str(e),' s \n']);
             t = cputime;
@@ -853,26 +878,42 @@ for u = [1,M]
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
             
-            for i = 1:npixels
-                for j = 1:npixels
-                    
-                    Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
-                    fu1 = inv_u*Y1;
-                    
-                    snapshots_recolored1(i,j,ind_l_sub{k}) = fu1(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y2 = [double(squeeze(im_orig2(i,j,indl_k-min(indl_k)+1)))];
-                    fu2 = inv_u*Y2;
-                    
-                    snapshots_recolored2(i,j,ind_l_sub{k}) = fu2(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y3 = [double(squeeze(im_orig3(i,j,indl_k-min(indl_k)+1)))];
-                    fu3 = inv_u*Y3;
-                    
-                    snapshots_recolored3(i,j,ind_l_sub{k}) = fu3(end-length(ind_l_sub{k})+1:end);
-                end
-            end
-            
+            Y1 = im_orig1(:,:,indl_k-min(indl_k)+1);
+            Y1 = double(Y1);
+            Y1 = permute(Y1, [3 1 2]);
+            [Y1, sz_roll] = unroll_dim(Y1, 2);
+
+            fu1 = inv_u*Y1;
+            fu1 = fu1(end-length(ind_l_sub{k})+1:end,:);
+            fu1 = roll_dim(fu1, sz_roll);
+            fu1 = permute(fu1, [2 3 1]);
+
+            snapshots_recolored1(:,:,ind_l_sub{k}) = fu1;
+
+            Y2 = im_orig2(:,:,indl_k-min(indl_k)+1);
+            Y2 = double(Y2);
+            Y2 = permute(Y2, [3 1 2]);
+            [Y2, sz_roll] = unroll_dim(Y2, 2);
+
+            fu2 = inv_u*Y2;
+            fu2 = fu2(end-length(ind_l_sub{k})+1:end,:);
+            fu2 = roll_dim(fu2, sz_roll);
+            fu2 = permute(fu2, [2 3 1]);
+
+            snapshots_recolored2(:,:,ind_l_sub{k}) = fu2;
+
+            Y3 = im_orig3(:,:,indl_k-min(indl_k)+1);
+            Y3 = double(Y3);
+            Y3 = permute(Y3, [3 1 2]);
+            [Y3, sz_roll] = unroll_dim(Y3, 2);
+
+            fu3 = inv_u*Y3;
+            fu3 = fu3(end-length(ind_l_sub{k})+1:end,:);
+            fu3 = roll_dim(fu3, sz_roll);
+            fu3 = permute(fu3, [2 3 1]);
+
+            snapshots_recolored3(:,:,ind_l_sub{k}) = fu3;
+
             e = cputime - t;
             fprintf(['Snapshots recolored in ',num2str(e),' s \n']);
             t = cputime;
@@ -968,27 +1009,43 @@ for u = 1:M
             e = cputime - t;
             fprintf([num2str(k),'/',num2str(K),' - Initialization - OK in ',num2str(e),' s \n']);
             t = cputime;
+
+            Y1 = im_orig1(:,:,indl_k-min(indl_k)+1);
+            Y1 = double(Y1);
+            Y1 = permute(Y1, [3 1 2]);
+            [Y1, sz_roll] = unroll_dim(Y1, 2);
+
+            fu1 = inv_u*Y1;
+            fu1 = fu1(end-length(ind_l_sub{k})+1:end,:);
+            fu1 = roll_dim(fu1, sz_roll);
+            fu1 = permute(fu1, [2 3 1]);
+
+            snapshots_recolored1(:,:,ind_l_sub{k}) = fu1;
             
-            for i = 1:npixels
-                for j = 1:npixels
-                    
-                    Y1 = [double(squeeze(im_orig1(i,j,indl_k-min(indl_k)+1)))];
-                    fu1 = inv_u*Y1;
-                    
-                    snapshots_recolored1(i,j,ind_l_sub{k}) = fu1(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y2 = [double(squeeze(im_orig2(i,j,indl_k-min(indl_k)+1)))];
-                    fu2 = inv_u*Y2;
-                    
-                    snapshots_recolored2(i,j,ind_l_sub{k}) = fu2(end-length(ind_l_sub{k})+1:end);
-                    
-                    Y3 = [double(squeeze(im_orig3(i,j,indl_k-min(indl_k)+1)))];
-                    fu3 = inv_u*Y3;
-                    
-                    snapshots_recolored3(i,j,ind_l_sub{k}) = fu3(end-length(ind_l_sub{k})+1:end);
-                end
-            end
-            
+            Y2 = im_orig2(:,:,indl_k-min(indl_k)+1);
+            Y2 = double(Y2);
+            Y2 = permute(Y2, [3 1 2]);
+            [Y2, sz_roll] = unroll_dim(Y2, 2);
+
+            fu2 = inv_u*Y2;
+            fu2 = fu2(end-length(ind_l_sub{k})+1:end,:);
+            fu2 = roll_dim(fu2, sz_roll);
+            fu2 = permute(fu2, [2 3 1]);
+
+            snapshots_recolored2(:,:,ind_l_sub{k}) = fu2;
+
+            Y3 = im_orig3(:,:,indl_k-min(indl_k)+1);
+            Y3 = double(Y3);
+            Y3 = permute(Y3, [3 1 2]);
+            [Y3, sz_roll] = unroll_dim(Y3, 2);
+
+            fu3 = inv_u*Y3;
+            fu3 = fu3(end-length(ind_l_sub{k})+1:end,:);
+            fu3 = roll_dim(fu3, sz_roll);
+            fu3 = permute(fu3, [2 3 1]);
+
+            snapshots_recolored3(:,:,ind_l_sub{k}) = fu3;
+
             e = cputime - t;
             fprintf(['Snapshots recolored in ',num2str(e),' s \n']);
             t = cputime;
