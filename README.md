@@ -1,5 +1,5 @@
 # data-fusion
-This repository contains the MATLAB library implementing the data fusion algorithm on a computational example and experimental cross-sections of developing fly embryos. It is associated to the article "Synthesizing developmental trajectories by data fusion", Villoutreix P., Andén J., et al., 2017.
+This repository contains the MATLAB library implementing the data fusion algorithm on a computational example and experimental cross-sections of developing fly embryos. It is associated to the article "Synthesizing developmental trajectories by semi-supervised learning", Villoutreix P., Andén J., et al., 2017.
 
 The code is written in Matlab. The datasets can be found at: https://github.com/paulvill/data-fusion-images .
 
