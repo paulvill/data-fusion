@@ -640,18 +640,19 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels,
-    for j = 1:npixels, 
+Y1 = cat(4, snapshots_orig1.images(:,:,2,snapshots1_mask), ...
+    snapshots_orig2_1.images(:,:,3,snapshots2_mask), ...
+    snapshots_orig3_1.images(:,:,3,snapshots3_mask));
+Y1 = double(Y1);
+Y1 = permute(Y1, [4 1 2 3]);
+[Y1, sz_roll] = unroll_dim(Y1, 2);
 
-        Y1 = [double(squeeze(snapshots_orig1.images(i,j,2,snapshots1_mask))); double(squeeze(snapshots_orig2_1.images(i,j,3,snapshots2_mask))); double(squeeze(snapshots_orig3_1.images(i,j,3,snapshots3_mask)))];
-        fu1 = inv_u*Y1;
-        
-        % coloring movies
-        movies_colored_dpERK.images(i,j,2,all.movie_idx<8&mask') = fu1(1:nmov);
+fu1 = inv_u*Y1;
+fu1 = fu1(1:nmov,:);
+fu1 = roll_dim(fu1, sz_roll);
+fu1 = permute(fu1, [2 3 1]);
 
-    end
-end
-
+movies_colored_dpERK.images(:,:,2,all.movie_idx<8&mask') = fu1;
 
 e = cputime - t;
 
@@ -701,19 +702,18 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels, %
-    for j = 1:npixels, %
+Y1 = cat(4, snapshots_orig1.images(:,:,3,snapshots1_mask), ...
+    snapshots_orig4_1.images(:,:,3,snapshots4_mask));
+Y1 = double(Y1);
+Y1 = permute(Y1, [4 1 2 3]);
+[Y1, sz_roll] = unroll_dim(Y1, 2);
 
-        Y1 = [double(squeeze(snapshots_orig1.images(i,j,3,snapshots1_mask))); double(squeeze(snapshots_orig4_1.images(i,j,3,snapshots4_mask)))];%Twi
+fu1 = inv_u*Y1;
+fu1 = fu1(1:nmov,:);
+fu1 = roll_dim(fu1, sz_roll);
+fu1 = permute(fu1, [2 3 1]);
 
-        fu1 = inv_u*Y1;
-        
-        % coloring movies
-        movies_colored_twi.images(i,j,2,all.movie_idx<8&mask') = fu1(1:nmov);
-        
-    end
-end
-
+movies_colored_twi.images(:,:,2,all.movie_idx<8&mask') = fu1;
 
 e = cputime - t;
 
@@ -763,19 +763,18 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels, %
-    for j = 1:npixels, %
+Y1 = cat(4, snapshots_orig2.images(:,:,2,snapshots2_mask), ...
+    snapshots_orig4_1.images(:,:,1,snapshots4_mask));
+Y1 = double(Y1);
+Y1 = permute(Y1, [4 1 2 3]);
+[Y1, sz_roll] = unroll_dim(Y1, 2);
 
-        Y1 = [double(squeeze(snapshots_orig2.images(i,j,2,snapshots2_mask))); double(squeeze(snapshots_orig4_1.images(i,j,1,snapshots4_mask)))];%ind
+fu1 = inv_u*Y1;
+fu1 = fu1(1:nmov,:);
+fu1 = roll_dim(fu1, sz_roll);
+fu1 = permute(fu1, [2 3 1]);
 
-        fu1 = inv_u*Y1;
-        
-        % coloring movies
-        movies_colored_ind.images(i,j,2,all.movie_idx<8&mask') = fu1(1:nmov);
-        
-    end
-end
-
+movies_colored_ind.images(:,:,2,all.movie_idx<8&mask') = fu1;
 
 e = cputime - t;
 
@@ -825,19 +824,17 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels, %
-    for j = 1:npixels, %
-        
-        Y1 = [double(squeeze(snapshots_orig2_1.images(i,j,1,snapshots2_mask)))];%Dorsal
+Y1 = snapshots_orig2_1.images(:,:,1,snapshots2_mask);
+Y1 = double(Y1);
+Y1 = permute(Y1, [4 1 2 3]);
+[Y1, sz_roll] = unroll_dim(Y1, 2);
 
-        fu1 = inv_u*Y1;
-        
-        % coloring movies
-        movies_colored_dl.images(i,j,2,all.movie_idx<8&mask') = fu1(1:nmov);
-        
-    end
-end
+fu1 = inv_u*Y1;
+fu1 = fu1(1:nmov,:);
+fu1 = roll_dim(fu1, sz_roll);
+fu1 = permute(fu1, [2 3 1]);
 
+movies_colored_dl.images(:,:,2,all.movie_idx<8&mask') = fu1;
 
 e = cputime - t;
 
@@ -887,19 +884,17 @@ snapshots2_mask = mask(all.movie_idx == 9);
 snapshots3_mask = mask(all.movie_idx == 10);
 snapshots4_mask = mask(all.movie_idx == 11);
 
-for i = 1:npixels, %
-    for j = 1:npixels, %
-        
-        Y1 = [double(squeeze(snapshots_orig3_1.images(i,j,1,snapshots3_mask))); double(squeeze(snapshots_orig4_1.images(i,j,2,snapshots4_mask)))];%rho
+Y1 = cat(4, snapshots_orig3_1.images(:,:,1,snapshots3_mask), snapshots_orig4_1.images(:,:,2,snapshots4_mask));
+Y1 = double(Y1);
+Y1 = permute(Y1, [4 1 2 3]);
+[Y1, sz_roll] = unroll_dim(Y1, 2);
 
-        fu1 = inv_u*Y1;
-        
-        % coloring movies
-        movies_colored_rho.images(i,j,2,all.movie_idx<8&mask') = fu1(1:nmov);
-        
-    end
-end
+fu1 = inv_u*Y1;
+fu1 = fu1(1:nmov,:);
+fu1 = roll_dim(fu1, sz_roll);
+fu1 = permute(fu1, [2 3 1]);
 
+movies_colored_rho.images(:,:,2,all.movie_idx<8&mask') = fu1;
 
 e = cputime - t;
 
