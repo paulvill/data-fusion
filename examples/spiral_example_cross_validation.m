@@ -140,7 +140,8 @@ m = mean(abs_error,2);
 s = std(abs_error,0,2);
 
 h = figure; 
-errorbar(n_unlbds,m,s,'LineWidth',5,'Color',[0.5 0.5 0.5])
+p = errorbar(n_unlbds,m,s);
+set(p,'LineWidth',5,'Color',[0.5 0.5 0.5]);
 hold on,
 plot(n_unlbds,m,'o','Color',[0.5 0.5 0.5],'MarkerSize',10,'MarkerFaceColor',[0.5 0.5 0.5])
 xlabel('Number of unlabeled points');
