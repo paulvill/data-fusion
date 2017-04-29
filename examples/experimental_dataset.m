@@ -972,7 +972,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(fused(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(fused(:,:,:,indtemp(k)),fullfile(d, [num2str(k),'.png']));
+    imwrite(fused(:,:,:,indtemp(k)),fullfile(d, sprintf('%04d.png', k)));
 end
 
 % save the fused movie with all channels separated as gray scale
@@ -993,7 +993,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['nuclei',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('nuclei%04d.png', k)));
 end
 
 % dpERK
@@ -1008,7 +1008,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['dpERK',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('dpERK%04d.png', k)));
 end
 
 % twist 
@@ -1023,7 +1023,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['twist',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('twist%04d.png', k)));
 end
 
 % ind
@@ -1038,7 +1038,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['ind',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('ind%04d.png', k)));
 end
 
 % dorsal
@@ -1053,7 +1053,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['dorsal',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('dorsal%04d.png', k)));
 end
 
 % rhomboid
@@ -1068,7 +1068,7 @@ figure,
 for k = 1:length(indtemp),
     imagesc(imtemp(:,:,:,indtemp(k)));
     pause(0.1);
-    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, ['rhomboid',num2str(k),'.png']));
+    imwrite(imtemp(:,:,:,indtemp(k)),fullfile(d, sprintf('rhomboid%04d.png', k)));
 end
 
 
