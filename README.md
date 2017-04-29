@@ -13,7 +13,7 @@ Some of the scripts used have been published previously:
 - Lederman, Roy R., and Ronen Talmon. "Common manifold learning using alternating-diffusion."  Tech. Report YALEU/DCS/TR-1497 (2014).
     Scripts are stored in the folder LT14.
 
-To initialize the paths, first run `addpath_datafusion`.
+To initialize the paths, first run `addpath_datafusion`. The images can then be downloaded automatically by running `download_data'.
 The main scripts are found in the `examples` folder and consist of:
 - spiral_example.m : implements the data fusion algorithm on a non-linear 1-dimensional trajectory in a 3-dimensional space, knicknamed "spiral".
 - spiral_example_cross_validation.m : implements the K-fold cross-validation on the "spiral".
