@@ -8,8 +8,6 @@ addpath(fullfile(root_dir, 'manifold'));
 
 % Scripts from Lim, B. et al., Current Biology, 2015
 addpath(fullfile(root_dir, 'DLL15'));
-% Scripts from Dsilva, C.J. et al., Development, 2015
-addpath(fullfile(root_dir, 'LDL15'));
 % Scripts from Lederman, R.R. and Talmon, R., Tech. Rep., Yale, 2014
 addpath(fullfile(root_dir, 'LT14'));
 
