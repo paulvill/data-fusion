@@ -15,9 +15,24 @@ function download_data()
 
     mkdirp('data');
 
-    fprintf('Downloading data into %s...', location);
-    urlwrite(url, location);
-    fprintf('OK\n');
+    if exist(location, 'file')
+        fprintf('Zip file exists on disk. Skipping download.\n');
+    else
+        fprintf('Downloading data into %s...', location);
+        try
+            urlwrite(url, location);
+            fprintf('OK\n');
+        catch
+            fprintf('Failed\n');
+            fprintf('Please download the zip file at the URL\n');
+            fprintf('    %s\n', url);
+            fprintf('store it in the location\n');
+            fprintf('    %s\n', location);
+            fprintf('and rerun ''download_data''.\n');
+
+            return;
+        end
+    end
 
     fprintf('Extracting archive...');
     filenames = unzip(location, 'data');
