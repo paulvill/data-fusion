@@ -38,20 +38,9 @@ function download_data()
     filenames = unzip(location, 'data');
     delete(location);
 
-    for k = 1:numel(filenames)
-        source = filenames{k};
+    root = 'data-fusion-images-master';
 
-        [source_path, source_file, source_ext] = fileparts(source);
-        [~, source_path] = fileparts(source_path);
-
-        dest = fullfile('data', source_path, [source_file source_ext]);
-
-        mkdirp(fileparts(dest));
-
-        if ~strcmp(source, dest)
-            movefile(source, dest);
-        end
-    end
+    copyfile(fullfile('data', root, '*'), ['data' filesep], 'f');
 
     if isoctave()
         confirm_recursive_rmdir(false, 'local');
