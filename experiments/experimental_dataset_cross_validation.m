@@ -11,6 +11,25 @@
 % Set visualization presets.
 presets;
 
+%% Set parameters for script.
+
+% Number of folds.
+K_snapshots1 = 6;
+K_snapshots2 = 3;
+K_snapshots3 = 3;
+K_snapshots4 = 2;
+
+% The order (number of layers) and scale (2^J is the averaging window size)
+% of the scattering transform. For M = 0, only blurred images are given,
+% while M = 1 and M = 2 retains more information on the finer-scale spatial
+% structure of the images.
+scat_M = 1;
+scat_J = 6;
+
+% Number of nearest neighbors used to determine the scale for the affinity
+% matrix the harmonic extension reconstruction method used to color the movies.
+coloring_num_neighbors = 10;
+
 %% Importing movie frames
 
 % Number of movies to load.
@@ -512,13 +531,6 @@ all = cat_movie_sets(all, snapshots2);
 all = cat_movie_sets(all, snapshots3);
 all = cat_movie_sets(all, snapshots4);
 
-% The order (number of layers) and scale (2^J is the averaging window size)
-% of the scattering transform. For M = 0, only blurred images are given,
-% while M = 1 and M = 2 retains more information on the finer-scale spatial
-% structure of the images.
-scat_M = 1;
-scat_J = 6;
-
 % To obtain some invariance to translation (our centering above may not be as
 % good as we need it to be) and create stability to deformation (in particular
 % some snapshots can be very deformed from the ideal circular embryo), we
@@ -526,7 +538,6 @@ scat_J = 6;
 fprintf('Calculating scattering transforms...');
 S_all = scat_images(all.images, scat_M, scat_J);
 fprintf('OK\n');
-
 
 % Center each of datasets to have mean zero.
 fprintf('Centering feature vectors...');
@@ -559,7 +570,7 @@ abs_error = zeros(M,nrep,3,4);
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 1
 
-K = 6;
+K = K_snapshots1;
 
 % varying the number of unlabeled samples
 for u = 1:M
@@ -578,7 +589,7 @@ for u = 1:M
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
         
-        W = AffinityFromDistance(V,10);
+        W = AffinityFromDistance(V, coloring_num_neighbors);
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig1.movie_idx);
@@ -669,7 +680,7 @@ for u = 1:M
 end
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 2
-K = 3;
+K = K_snapshots2;
 
 % varying the number of unlabeled samples
 for u = 1:M
@@ -688,7 +699,7 @@ for u = 1:M
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
         
-        W = AffinityFromDistance(V,10);
+        W = AffinityFromDistance(V, coloring_num_neighbors);
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig2.movie_idx);
@@ -801,7 +812,7 @@ end
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 3
 
-K = 3;
+K = K_snapshots3;
 
 % varying the number of unlabeled samples
 for u = [1,M]
@@ -820,7 +831,7 @@ for u = [1,M]
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
         
-        W = AffinityFromDistance(V,10);
+        W = AffinityFromDistance(V, coloring_num_neighbors);
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig3.movie_idx);
@@ -933,7 +944,7 @@ end
 
 
 %% K-fold cross validation and varying the number of unlabeled samples - data set 4
-K = 2;
+K = K_snapshots4;
 
 % varying the number of unlabeled samples
 for u = 1:M
@@ -952,7 +963,7 @@ for u = 1:M
         mask_tot = [indu_mask,indl];
         nmov = length(indu_mask);
         
-        W = AffinityFromDistance(V,10);
+        W = AffinityFromDistance(V, coloring_num_neighbors);
         
         % defining the K subsamples of the labeled data points
         nb_labels = length(snapshots_orig4.movie_idx);

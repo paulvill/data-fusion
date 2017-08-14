@@ -19,6 +19,23 @@
 % Set visualization presets.
 presets;
 
+%% Set parameters for script.
+
+% The order (number of layers) and scale (2^J is the averaging window size)
+% of the scattering transform. For M = 0, only blurred images are given,
+% while M = 1 and M = 2 retains more information on the finer-scale spatial
+% structure of the images.
+scat_M = 1;
+scat_J = 6;
+
+% Number of nearest neighbors used to determine the scale for the affinity
+% matrix for 1) the diffusion map visualization, 2) the affinity matrix
+% visualization, and 3) the harmonic extension reconstruction method used to
+% color the movies.
+dmap_num_neighbors = 50;
+vis_num_neighbors = 10;
+coloring_num_neighbors = 10;
+
 %% Importing movie frames
 
 % Number of movies to load.
@@ -520,13 +537,6 @@ all = cat_movie_sets(all, snapshots2);
 all = cat_movie_sets(all, snapshots3);
 all = cat_movie_sets(all, snapshots4);
 
-% The order (number of layers) and scale (2^J is the averaging window size)
-% of the scattering transform. For M = 0, only blurred images are given,
-% while M = 1 and M = 2 retains more information on the finer-scale spatial
-% structure of the images.
-scat_M = 1;
-scat_J = 6;
-
 % To obtain some invariance to translation (our centering above may not be as
 % good as we need it to be) and create stability to deformation (in particular
 % some snapshots can be very deformed from the ideal circular embryo), we
@@ -556,7 +566,7 @@ V = V(mask,mask);
 
 clear embed_coords;
 fprintf('Calculating diffusion maps for sanity check ...');
-[~, embed_coords] = DiffusionMapsFromDistanceGlobal(V, 1, 50);
+[~, embed_coords] = DiffusionMapsFromDistanceGlobal(V, 1, dmap_num_neighbors);
 embed_coords = embed_coords(:,2:4);
 fprintf('OK\n');
 
@@ -603,7 +613,7 @@ for i = 1:max(all.movie_idx),
 end
 
 % figure showing the affinity matrix
-W_vis = AffinityFromDistance(V_vis,10);
+W_vis = AffinityFromDistance(V_vis, vis_num_neighbors);
 figure, 
 imagesc(W_vis);
 hold on,
@@ -617,7 +627,7 @@ end
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
-W = AffinityFromDistance(V,10);
+W = AffinityFromDistance(V, coloring_num_neighbors);
 
 indl = find(all.movie_idx(mask) == 8 | all.movie_idx(mask) == 9 | all.movie_idx(mask) == 10)';
 indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 10)';
@@ -677,7 +687,7 @@ movies_colored_dpERK.images = movies_colored_dpERK.images/max(movies_colored_dpE
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
-W = AffinityFromDistance(V,10);
+W = AffinityFromDistance(V, coloring_num_neighbors);
 
 indl = find(all.movie_idx(mask) == 8 | all.movie_idx(mask) == 11)';
 indu = find(all.movie_idx(mask) ~= 8 & all.movie_idx(mask) ~= 11)';
@@ -738,7 +748,7 @@ movies_colored_twi.images = movies_colored_twi.images/max(movies_colored_twi.ima
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
-W = AffinityFromDistance(V,10);
+W = AffinityFromDistance(V, coloring_num_neighbors);
 
 indl = find(all.movie_idx(mask) == 9 | all.movie_idx(mask) == 11)';
 indu = find(all.movie_idx(mask) ~= 9 & all.movie_idx(mask) ~= 11)';
@@ -799,7 +809,7 @@ movies_colored_ind.images = movies_colored_ind.images/max(movies_colored_ind.ima
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
-W = AffinityFromDistance(V,10);
+W = AffinityFromDistance(V, coloring_num_neighbors);
 
 indl = find(all.movie_idx(mask) == 9)';
 indu = find(all.movie_idx(mask) ~= 9)';
@@ -858,7 +868,7 @@ movies_colored_dl.images = movies_colored_dl.images/max(movies_colored_dl.images
 t = cputime;
 ntot = sum(mask);
 nmov = length(find(find(all.movie_idx(mask) < 8)));
-W = AffinityFromDistance(V,10);
+W = AffinityFromDistance(V, coloring_num_neighbors);
 
 indl = find(all.movie_idx(mask) >9)';
 indu = find(all.movie_idx(mask) < 10)';
