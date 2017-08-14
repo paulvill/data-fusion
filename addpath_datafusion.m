@@ -4,6 +4,7 @@ root_dir = fileparts(mfilename('fullpath'));
 addpath(fullfile(root_dir, 'image'));
 addpath(fullfile(root_dir, 'utilities'));
 addpath(fullfile(root_dir, 'examples'));
+addpath(fullfile(root_dir, 'experiments'));
 addpath(fullfile(root_dir, 'manifold'));
 
 % Scripts from Lim, B. et al., Current Biology, 2015
