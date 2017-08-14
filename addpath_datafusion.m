@@ -16,6 +16,3 @@ addpath(fullfile(root_dir, 'LT14'));
 % ScatNet Toolbox for Scattering Transform
 addpath(fullfile(root_dir, 'scatnet-0.2'));
 addpath_scatnet;
-
-% Visualization settings
-presets;
