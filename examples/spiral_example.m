@@ -15,20 +15,33 @@
 % Load visualization presets.
 presets;
 
-% parameters value
+%% Parameters
+
+% Parameters for the synthetic trajectory to be generated.
 a = 1;
 b = 0.1;
 c1 = 1;
 d1 = 0.005;
 e1 = 65;
 
+% Noise in the various channels.
+sigma = [0.02, 0.02, 0];
+
+% Number of labeled data points.
+l1 = 120;
+
+% Number of unlabeled data points.
+l2 = 300;
+
+% Number of nearest neighbors to use when determining scale for affinity matrix.
+num_neighbors = 10;
+
+%% Generate data
 
 % labeled data points index
-l1 = 120;
 indl1 = 1:l1;
 
 % unlabeled data points index
-l2 = 300;
 indl2 = l1+1:l1+l2;
 
 % total number of points
@@ -36,9 +49,6 @@ n = l1 + l2;
 
 % matrix containing the common modality (x^1, x^2) and the labels y
 M = zeros(3,n);
-
-% noise in the various channels
-sigma = [0.02,0.02,0];
 
 % time step - for each data point
 % the time steps of unlabeled data points are evenly distributed between 
@@ -110,7 +120,7 @@ saveas(h,fullfile(d, 'x1_x2_labels'),'png');
 % computing pairwise differences between pairs of (x1(i), x2(i)) and 
 % (x1(j), x2(j)) and corresponding affinity matrix W = (w_i,j)
 dist = distances(M(1:2,:));
-W = AffinityFromDistance(dist,10);
+W = AffinityFromDistance(dist, num_neighbors);
 
 % solving the semi-supervised problem
 [inv_u] = ssl_estimate(W,indl1,indl2);

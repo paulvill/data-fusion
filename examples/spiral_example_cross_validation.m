@@ -9,20 +9,40 @@
 % Load visualization presets.
 presets;
 
-% parameters value
+%% Parameters
+
+% Parameters for the synthetic trajectory to be generated.
 a = 1;
 b = 0.1;
 c1 = 1;
 d1 = 0.005;
 e1 = 65;
 
+% Noise in the various channels.
+sigma = [0.02, 0.02, 0];
+
+% Number of labeled data points.
+l1 = 120;
+
+% Number of unlabeled data points.
+l2 = 300;
+
+% Number of nearest neighbors to use when determining scale for affinity matrix.
+num_neighbors = 10;
+
+% Number of cross-validation bins.
+K = 5;
+
+% Number of repetitions for each configuration of labeled/unlabeled data
+% points.
+nrep = 100;
+
+%% Generate data
 
 % labeled data points index
-l1 = 120;
 indl1 = 1:l1;
 
 % unlabeled data points index
-l2 = 300;
 indl2 = l1+1:l1+l2;
 
 % total number of points
@@ -30,9 +50,6 @@ n = l1 + l2;
 
 % matrix containing the common modality (x^1, x^2) and the labels y
 M = zeros(3,n);
-
-% noise in the various channels
-sigma = [0.02,0.02,0];
 
 % time step - for each data point
 % the time steps of unlabeled data points are evenly distributed between 
@@ -58,16 +75,10 @@ M(2,:) = [a*([t2;t1]).*(sin(b*([t2;t1]))+sigma(2)*randn(n,1))];
 M(3,indl1) = c1*t2.*(exp(-d1*(t2-e1).^2)+sigma(3)*randn(l1,1));
 
 %% K-fold cross validation
- 
-% number of bins
-K = 5;
 
 % number of unlabeled data points
-n_unlbds = (0:10:300);
+n_unlbds = (0:10:l2);
 
-% number of repetitions for each configuration of labeled/unlabeled data
-% points
-nrep = 100;
 
 % vector where the absolute error is stored
 abs_error = zeros(length(n_unlbds),nrep);
@@ -93,7 +104,7 @@ for u = 1:length(n_unlbds)
         % computing the affinity matrix on the reduced number of data
         % points
         dist = distances(M(1:2,:));
-        W = AffinityFromDistance(dist(mask_tot,mask_tot),10); 
+        W = AffinityFromDistance(dist(mask_tot,mask_tot), num_neighbors); 
         
         % defining randomly K subsamples of the labeled data points
         nb_labels = length(indl);
