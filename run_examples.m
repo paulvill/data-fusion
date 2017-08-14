@@ -1,5 +1,8 @@
 % Run toy examples in the `examples` folder.
 
+% Make sure the proper folders are in the path.
+addpath_datafusion;
+
 % Apply our data fusion method to the synthetic spiral dataset, where a one-
 % dimensional trajectory embedded in three dimensions is reconstructed from
 % its projection onto two dimensions.

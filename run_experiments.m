@@ -1,5 +1,8 @@
 % Run scripts for experimental data in the `experiments` folder.
 
+% Make sure the proper folders are in the path.
+addpath_datafusion;
+
 % First, download the dataset.
 download_data;
 
