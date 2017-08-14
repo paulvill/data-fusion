@@ -1,5 +1,3 @@
-addpath_datafusion
-
 % this script aims at computing the K-fold cross-validation error for each
 % of the labels, for each of the datasets
 % we first import all the images, movies and snapshots and apply image

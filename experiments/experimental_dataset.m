@@ -1,5 +1,3 @@
-addpath_datafusion
-
 % this script colors movies from static snapshots using semi supervised learning 
 % the first step is to import and apply image preprocessing on movie frames
 % and snapshots

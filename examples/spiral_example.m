@@ -1,5 +1,3 @@
-addpath_datafusion
-
 %%
 
 % parameters value
