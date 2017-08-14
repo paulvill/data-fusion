@@ -6,6 +6,7 @@ addpath(fullfile(root_dir, 'utilities'));
 addpath(fullfile(root_dir, 'examples'));
 addpath(fullfile(root_dir, 'experiments'));
 addpath(fullfile(root_dir, 'manifold'));
+addpath(fullfile(root_dir, 'visualization'));
 
 % Scripts from Lim, B. et al., Current Biology, 2015
 addpath(fullfile(root_dir, 'DLL15'));
