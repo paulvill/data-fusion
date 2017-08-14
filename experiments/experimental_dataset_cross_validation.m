@@ -1,7 +1,7 @@
 %%% EXPERIMENAL DATASET CROSS VALIDATION %%%
 
 % This script applies the same harmonic extension method as the
-% `experimental_dataset` script, but to K = 6 subsets of the data. This allows
+% `experimental_dataset` script, but to K subsets of the data. This allows
 % us to study the variability in the reconstruction and characterize the error
 % due to sampling. In addition, we vary the number of unlabeled data points
 % (that is, the number of live imaging movie frames containing no information
