@@ -532,17 +532,8 @@ scat_J = 6;
 % some snapshots can be very deformed from the ideal circular embryo), we
 % compute the scattering transform of the images.
 fprintf('Calculating scattering transforms...');
-pad_factor = 2;
-orig_sz = size(all.images(:,:,1));
-padded_sz = pad_factor*orig_sz;
-scat_opt.M = scat_M;
-filt_opt.J = scat_J;
-Wop = wavelet_factory_2d(padded_sz, filt_opt, scat_opt);
-
-S_all = scat_images(all.images, Wop, false, pad_factor);
-S_all = reshape(S_all, [], size(S_all, 4));
+S_all = scat_images(all.images, scat_M, scat_J);
 fprintf('OK\n');
-
 
 % Center each of datasets to have mean zero.
 fprintf('Centering feature vectors...');
