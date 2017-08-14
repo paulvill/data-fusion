@@ -1,5 +1,8 @@
 %%
 
+% Load visualization presets.
+presets;
+
 % parameters value
 a = 1;
 b = 0.1;

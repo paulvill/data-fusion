@@ -8,6 +8,9 @@
 % each of the channels and each of the datasets, with a varying number of
 % unlabeled movie frames
 
+% Set visualization presets.
+presets;
+
 %% Importing movie frames
 
 % Number of movies to load.

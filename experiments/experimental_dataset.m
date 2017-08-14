@@ -8,6 +8,9 @@
 % finally a colored movie is stored as a sequence of images, either
 % combined or channel by channel
 
+% Set visualization presets.
+presets;
+
 %% Importing movie frames
 
 % Number of movies to load.
