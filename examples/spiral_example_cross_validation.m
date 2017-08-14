@@ -1,4 +1,10 @@
-%% Initialization
+%%% SPIRAL EXAMPLE CROSS VALIDATION %%%
+
+% This script uses the same setup as `spiral_example` to illustrate the harmonic
+% extension method on a toy example dataset. Here, we examine the variability in
+% the reconstruction by cross-validating over K = 5 folds. We also vary the
+% number of unlabeled data points (that is points containing only x^1 and x^2,
+% not the labels y) and to capture its effect on the reconstruction results.
 
 % Load visualization presets.
 presets;

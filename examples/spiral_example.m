@@ -1,4 +1,16 @@
-%%
+%%% SPIRAL EXAMPLE %%%
+
+% This script applies the harmonic extension data fusion method to a toy example
+% which consists of a one-dimensional trajectory embedded in three dimensions.
+% Here, two types of data are observed: continuous trajectories where only the
+% first two dimensions (x^1 and x^2) are given, and isolated snapshots
+% described by triplets (x^1, x^2, y). The common dimensions are x^1 and x^2,
+% while y is the label dimension, and the two sets of data are referred to as
+% the "unlabeled" and "labeled" data, respectively. Our task is to reconstruct
+% the missing labels in the unlabeled data using information from the labeled
+% data. This is achieved using the harmonic extension method, which relies on
+% smoothness along the common dimensions x^1 and x^2 to reconstruct the map
+% (x^1, x^2) to y.
 
 % Load visualization presets.
 presets;
