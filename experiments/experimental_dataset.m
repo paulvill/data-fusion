@@ -1,12 +1,20 @@
-% this script colors movies from static snapshots using semi supervised learning 
-% the first step is to import and apply image preprocessing on movie frames
-% and snapshots
-% the scattering transformation is then computed on the entire set of
-% images
-% an affinity matrix is obtained from the scattering transformation and
-% used to compute the semi-supervised algorithm for each channel
-% finally a colored movie is stored as a sequence of images, either
-% combined or channel by channel
+%%% EXPERIMENTAL DATASET %%%
+
+% This script colors live imaging movies of nuclei morphology using static
+% snapshots at fixed points in time depicting the spatial distributions of
+% various chemical species. The result is a colored movie showing the temporal
+% dynamics of these concentrations overlaid on the underlying morphological
+% dynamics.
+%
+% The method employed first preprocesses the snapshots so that they can be more
+% easily compared. This involves centering, rotating, and normalizing the
+% intensity levels of the channel depicting the nuclei. To reduce variability
+% due to translation and deformation, a two-dimensional scattering transform is
+% calculated, and the distance between scattering transforms is then used to
+% measure the difference between pairs of snapshots and movie frames. This is
+% then used as input to the harmonic extension algorithm, which learns a mapping
+% from the nuclei images to the spatial concentrations of the various chemicals,
+% allowing us to color the live imaging movie by applying this mapping.
 
 % Set visualization presets.
 presets;
